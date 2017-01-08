@@ -2,6 +2,7 @@ package com.favex.Activities;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,7 +17,10 @@ import android.widget.Toast;
 import com.favex.Adapters.QuestionFragmentAdapter;
 import com.favex.Interfaces.favorFormInterface;
 import com.favex.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
 
 import java.util.Locale;
 
@@ -26,17 +30,25 @@ import fr.castorflex.android.verticalviewpager.VerticalViewPager;
  * Created by Tavish on 08-Jan-17.
  */
 
-public class FavorFormActivity extends AppCompatActivity implements favorFormInterface {
+public class FavorFormActivity extends AppCompatActivity implements favorFormInterface,
+        GoogleApiClient.OnConnectionFailedListener  {
     private static final float MIN_SCALE = 0.75f;
     private static final float MIN_ALPHA = 0.75f;
     VerticalViewPager mVerticalQuestionViewPager;
     private Place favorLocation;
+    private GoogleApiClient mGoogleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favor_form_activity);
         mVerticalQuestionViewPager = (VerticalViewPager) findViewById(R.id.verticalQuestionViewPager);
         initVerticalViewPager(mVerticalQuestionViewPager, MIN_SCALE, MIN_ALPHA);
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
     }
     public void setFavorLocation(Place place)
     {
@@ -94,9 +106,20 @@ public class FavorFormActivity extends AppCompatActivity implements favorFormInt
         });
     }
 
+    public GoogleApiClient getGoogleApiClient()
+    {
+        return mGoogleApiClient;
+    }
+
     @Override
     public void onNext(int fragmentPos, VerticalViewPager v) {
         v.setCurrentItem(2);
         Toast.makeText(this,"Successful fragment callback!",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this,"FATAL ERROR: GOOGLE PLAY SERVICES CONNECTION FAILED!",Toast.LENGTH_SHORT);
+        //TODO: Provide more sophisticated implementation before submission
     }
 }
