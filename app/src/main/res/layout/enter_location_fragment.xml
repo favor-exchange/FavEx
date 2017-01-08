@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/locationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:text="Location: " />
+    <EditText
+        android:hint="Your favor's location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="none"
+        android:id="@+id/location"
+        android:layout_alignBaseline="@+id/locationLabel"
+        android:layout_alignBottom="@+id/locationLabel"
+        android:layout_toRightOf="@+id/locationLabel"
+        android:layout_toEndOf="@+id/locationLabel" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/next"
+        android:text="Next"
+        android:enabled="false"
+        android:layout_below="@+id/location"
+        android:layout_alignLeft="@+id/location"
+        android:layout_alignStart="@+id/location" />
+</RelativeLayout>

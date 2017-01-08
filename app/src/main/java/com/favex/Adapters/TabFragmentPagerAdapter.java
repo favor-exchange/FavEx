@@ -1,9 +1,13 @@
-package favex.favex;
+package com.favex.Adapters;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.favex.Fragments.ChatFragment;
+import com.favex.Fragments.EnterLocationFragment;
+import com.favex.Fragments.NearMeFragment;
+import com.favex.Fragments.RecentFragment;
 
 /**
  * Created by Tavish on 06-Jan-17.

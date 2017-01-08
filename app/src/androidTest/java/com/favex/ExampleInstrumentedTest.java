@@ -1,4 +1,4 @@
-package favex.favex;
+package com.favex;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

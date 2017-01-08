@@ -1,4 +1,4 @@
-package favex.favex;
+package com.favex;
 
 import org.junit.Test;
 

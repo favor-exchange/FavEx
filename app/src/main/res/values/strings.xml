@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FavEx</string>
+    <string name="sample_recipient">Recipient Name</string>
+    <string name="favor_action">"Help Out"</string>
+    <string name="locationImageDescription">"Image of favor location"</string>
+    <string name="chat">Chat</string>
 </resources>
