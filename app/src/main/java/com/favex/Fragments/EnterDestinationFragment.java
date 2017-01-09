@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.favex.Activities.FavorFormActivity;
+import com.favex.Interfaces.currentLocationInterface;
 import com.favex.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -28,9 +30,10 @@ import com.google.android.gms.location.places.Places;
  * Created by Tavish on 08-Jan-17.
  */
 
-public class EnterDestinationFragment extends Fragment {
+public class EnterDestinationFragment extends Fragment implements currentLocationInterface {
     private Button mCurrentLocationBtn;
     private GoogleApiClient mGoogleApiClient;
+    private String destinationId;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,11 +54,27 @@ public class EnterDestinationFragment extends Fragment {
                     result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                         @Override
                         public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                            for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                                Log.i("CURRENT PLACE", String.format("Place '%s' has likelihood: %g",
-                                        placeLikelihood.getPlace().getName(),
-                                        placeLikelihood.getLikelihood()));
+                            Bundle possibleLocations= new Bundle();
+                            String[] locationIds= new String[likelyPlaces.getCount()];
+                            String[] locationNames= new String[likelyPlaces.getCount()];
+                            for (int i=0;i<locationNames.length;i++) {
+                                locationNames[i]=likelyPlaces.get(i).getPlace().getName().toString();
+                                locationIds[i]=likelyPlaces.get(i).getPlace().getId();
                             }
+                            possibleLocations.putStringArray("locationNames",locationNames);
+                            possibleLocations.putStringArray("locationIds",locationIds);
+                            final FragmentManager fm = getFragmentManager();
+                            final LocationPicker dialogFragment = new LocationPicker ();
+                            EnterDestinationFragment fragmentInstance =
+                                    (EnterDestinationFragment) getFragmentManager().findFragmentByTag("android:switcher:" +
+                                            R.id.verticalQuestionViewPager + ":" + ((FavorFormActivity)getActivity()).
+                                            getVerticalViewPager().getCurrentItem());
+                            //FIGURING OUT THE ABOVE LINE WAS HELL
+                            //more importantly, method needs revision as it depends upon implementation in android library
+                            //method would not work if updates were to occur
+                            dialogFragment.setTargetFragment(fragmentInstance,0);
+                            dialogFragment.setArguments(possibleLocations);
+                            dialogFragment.show(fm, "Dialog Fragment");
                             likelyPlaces.release();
                         }
                     });
@@ -77,11 +96,24 @@ public class EnterDestinationFragment extends Fragment {
                     result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                         @Override
                         public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                            for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                                Log.i("CURRENT PLACE", String.format("Place '%s' has likelihood: %g",
-                                        placeLikelihood.getPlace().getName(),
-                                        placeLikelihood.getLikelihood()));
+                            Bundle possibleLocations= new Bundle();
+                            String[] locationIds= new String[likelyPlaces.getCount()];
+                            String[] locationNames= new String[likelyPlaces.getCount()];
+                            for (int i=0;i<locationNames.length;i++) {
+                                locationNames[i]=likelyPlaces.get(i).getPlace().getName().toString();
+                                locationIds[i]=likelyPlaces.get(i).getPlace().getId();
                             }
+                            possibleLocations.putStringArray("locationNames",locationNames);
+                            possibleLocations.putStringArray("locationIds",locationIds);
+                            final FragmentManager fm = getFragmentManager();
+                            final LocationPicker dialogFragment = new LocationPicker ();
+                            EnterDestinationFragment fragmentInstance =
+                                    (EnterDestinationFragment) getFragmentManager().findFragmentByTag("android:switcher:" +
+                                            R.id.verticalQuestionViewPager + ":" + ((FavorFormActivity)getActivity()).
+                                            getVerticalViewPager().getCurrentItem());
+                            dialogFragment.setTargetFragment(fragmentInstance,0);
+                            dialogFragment.setArguments(possibleLocations);
+                            dialogFragment.show(fm, "Dialog Fragment");
                             likelyPlaces.release();
                         }
                     });
@@ -92,4 +124,11 @@ public class EnterDestinationFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onLocationPicked(String placedId) {
+        destinationId=placedId;
+        Log.i("CURRENT LOCATION",destinationId);
+    }
+
 }

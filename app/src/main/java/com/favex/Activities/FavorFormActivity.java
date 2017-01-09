@@ -113,7 +113,7 @@ public class FavorFormActivity extends AppCompatActivity implements favorFormInt
 
     @Override
     public void onNext(int fragmentPos, VerticalViewPager v) {
-        v.setCurrentItem(2);
+        v.setCurrentItem(fragmentPos+1);
         Toast.makeText(this,"Successful fragment callback!",Toast.LENGTH_SHORT).show();
     }
 
