@@ -26,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        int defaultValue = 0;
+        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
+        viewPager.setCurrentItem(page);
+
         mAddFavor= (FloatingActionButton)findViewById(R.id.addFavor);
         mAddFavor.setOnClickListener(new View.OnClickListener() {
             @Override
