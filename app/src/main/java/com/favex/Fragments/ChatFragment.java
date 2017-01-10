@@ -1,8 +1,10 @@
 package com.favex.Fragments;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.favex.Adapters.ChatRecyclerAdapter;
 import com.favex.Applications.ChatApplication;
+import com.favex.Helpers.chatDatabaseHelper;
 import com.favex.R;
 
 import org.json.JSONArray;
@@ -28,13 +32,31 @@ public class ChatFragment extends Fragment
 {
 
     private Socket mSocket;
-    private RecyclerView mMessagesView;
+    private RecyclerView mMessagesRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    Cursor users;
+    private chatDatabaseHelper db;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.chat_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.chat_fragment, container, false);
+
+        db = new chatDatabaseHelper(getActivity());
+
+        mMessagesRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
+        mMessagesRecyclerView.setHasFixedSize(true);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mMessagesRecyclerView.setLayoutManager(mLayoutManager);
+
+        users = db.getAllChats();
+        mAdapter = new ChatRecyclerAdapter(users);
+        mMessagesRecyclerView.setAdapter(mAdapter);
+
+        return rootView;
     }
 
     @Override

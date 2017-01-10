@@ -24,6 +24,10 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
         users = res;
     }
 
+    public void reAssignCursor(Cursor res){
+        users = res;
+    }
+
     @Override
     public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.chat_item, parent, false);
