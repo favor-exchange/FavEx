@@ -16,18 +16,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.favex.Activities.MainActivity;
 import com.favex.Adapters.ChatRecyclerAdapter;
 import com.favex.Applications.ChatApplication;
-import com.favex.Helpers.chatDatabaseHelper;
+import com.favex.Helpers.databaseHelper;
 import com.favex.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -40,31 +41,40 @@ public class ChatFragment extends Fragment
 {
 
     private Socket mSocket;
-    private RecyclerView mMessagesRecyclerView;
+
+    private RecyclerView mChatsRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
     private NotificationManager mNotificationManager;
+
     boolean isInFront;
 
-    Cursor users;
-    private chatDatabaseHelper db;
+    private Cursor users;
+    private databaseHelper dbh;
 
+
+    public void test(){
+        for(int i = 0; i< 10; i++) {
+            dbh.insertUser("test", "test");
+        }
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.chat_fragment, container, false);
 
-        db = new chatDatabaseHelper(getActivity());
+        dbh = new databaseHelper(getActivity());
 
-        mMessagesRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
-        mMessagesRecyclerView.setHasFixedSize(true);
+        mChatsRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
+        mChatsRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mMessagesRecyclerView.setLayoutManager(mLayoutManager);
+        mChatsRecyclerView.setLayoutManager(mLayoutManager);
 
-        users = db.getAllChats();
+        users = dbh.getAllChats();
         mAdapter = new ChatRecyclerAdapter(users);
-        mMessagesRecyclerView.setAdapter(mAdapter);
+        mChatsRecyclerView.setAdapter(mAdapter);
 
         return rootView;
     }
@@ -132,16 +142,26 @@ public class ChatFragment extends Fragment
         public void call(final Object... args) {
             Log.e("Socket", "onNewMessage");
 
+            dbh = new databaseHelper(getActivity());
+
             JSONObject data = (JSONObject) args[0];
             try {
                 Log.e("message", data.getString("message"));
+
+                String message = data.getString("message");
+                String sender = data.getString("sender");
+                String facebookId = data.getString("facebookId");
+                String time = data.getString("time");
+                String date = data.getString("date");
+
+                dbh.insertMessage(message, sender, facebookId, time, date);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             if(!isInFront) {
-                long pattern[] = {0, 100, 300, 200};
-                pushNotification("New Message", "User", pattern);
+                pushNotification("New Message", "User");
             }
         }
     };
@@ -151,11 +171,22 @@ public class ChatFragment extends Fragment
         public void call(final Object... args) {
             Log.e("Socket", "onStoredMessages");
 
+            dbh = new databaseHelper(getActivity());
+
             JSONArray data = (JSONArray) args[0];
             if(data != null)
                 try {
                     for(int i = 0; i < data.length(); i++) {
+
                         Log.e("message", data.getJSONObject(i).getString("message"));
+
+                        String message = data.getJSONObject(i).getString("message");
+                        String sender = data.getJSONObject(i).getString("sender");
+                        String facebookId = data.getJSONObject(i).getString("facebookId");
+                        String time = data.getJSONObject(i).getString("time");
+                        String date = data.getJSONObject(i).getString("date");
+
+                        dbh.insertMessage(message, sender, facebookId, time, date);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -172,21 +203,33 @@ public class ChatFragment extends Fragment
 
             if(data.length() != 0 && !isInFront)
             {
-                long pattern[] = {0, 100, 300, 200};
-                pushNotification("New Message", "User", pattern);
+
+                pushNotification("New Message", "User");
             }
         }
     };
 
     private void sendMessage(){
         if(!mSocket.connected()){
+
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String time = sdf.format(cal.getTime());
+
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            int month = cal.get(Calendar.MONTH) + 1;
+            int year = cal.get(Calendar.YEAR);
+            String date = String.valueOf(day) + String.valueOf(month) + String.valueOf(year);
+
             return;
         }
 
 
     }
 
-    private void pushNotification(String contentTitle, String contentText, long[] pattern){
+    private void pushNotification(String contentTitle, String contentText){
+
+        long pattern[] = {0, 100, 300, 300};
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getActivity())
                         .setSmallIcon(R.mipmap.ic_launcher)

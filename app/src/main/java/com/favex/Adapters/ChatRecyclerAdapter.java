@@ -1,12 +1,15 @@
 package com.favex.Adapters;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.favex.Activities.MessagesActivity;
 import com.favex.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -18,19 +21,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapter.ChatViewHolder> {
 
     private Cursor users;
-    private LayoutInflater layoutInflater;
 
     public ChatRecyclerAdapter(Cursor res){
         users = res;
     }
 
-    public void reAssignCursor(Cursor res){
+    public void reassignCursor(Cursor res){
         users = res;
     }
 
     @Override
     public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.chat_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item, parent, false);
 
         return new ChatViewHolder(view);
     }
@@ -40,18 +42,25 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
         users.moveToPosition(position);
 
         viewHolder.mName.setText(users.getString(1));
+        viewHolder.mDate.setText("temp");
+        viewHolder.mProfilePicture.setImageResource(R.mipmap.ic_launcher);
+        viewHolder.mFacebookId = users.getString(2);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return users.getCount();
     }
+
+
+
 
     public class ChatViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mName;
         private TextView mDate;
         private CircleImageView mProfilePicture;
+        private String mFacebookId;
 
         public ChatViewHolder(View itemView) {
 
@@ -60,6 +69,15 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
             mDate = (TextView) itemView.findViewById(R.id.date_textView);
             mProfilePicture = (CircleImageView) itemView.findViewById(R.id.profile_image);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String facebookId = mFacebookId;
+                    Intent in = new Intent(v.getContext(), MessagesActivity.class);
+                    in.putExtra("facebookId", facebookId);
+                    v.getContext().startActivity(in);
+                }
+            });
         }
     }
 }
