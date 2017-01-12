@@ -31,6 +31,7 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         switch(viewType) {
 
             case 0: return new MessageViewHolderMyMessage(LayoutInflater.from(parent.getContext()).inflate(R.layout.user_message_item, parent, false));
+
             default: return new MessageViewHolderOtherMessage(LayoutInflater.from(parent.getContext()).inflate(R.layout.other_message_item, parent, false));
         }
     }
@@ -61,7 +62,9 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     public int getItemViewType(int position) {
         messages.moveToPosition(position);
         String sender = messages.getString(4);
-        if(sender.compareTo("MyFbId") == 0){
+
+        //check if sender is equal to users fbid to display messages as own
+        if(sender.compareTo("test") == 0){
             return 0;
         }
         return 1;

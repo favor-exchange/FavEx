@@ -73,8 +73,10 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
                 @Override
                 public void onClick(View v) {
                     String facebookId = mFacebookId;
+                    String sender = mName.getText().toString();
                     Intent in = new Intent(v.getContext(), MessagesActivity.class);
                     in.putExtra("facebookId", facebookId);
+                    in.putExtra("sender", sender);
                     v.getContext().startActivity(in);
                 }
             });
