@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin">
+    <TextView
+        android:layout_marginTop="8dp"
+        android:text="What do you need?"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/favorPrompt"
+        android:textSize="24sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:id="@+id/itemNameLabel"
+        android:text="Item Name: "
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:layout_below="@id/favorPrompt"/>
+    <EditText
+        android:id="@+id/itemName"
+        android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/favorPrompt"
+        android:layout_toRightOf="@+id/itemNameLabel"
+        android:layout_toEndOf="@+id/itemNameLabel" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priceLabel"
+        android:text="Price/Item: $"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:layout_below="@id/itemNameLabel"/>
+    <EditText
+        android:id="@+id/price"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/priceLabel"
+        android:layout_toRightOf="@id/priceLabel"
+        android:layout_alignBaseline="@+id/priceLabel"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/priceLabel"
+        android:id="@+id/quantityCounterPanel"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/quantityLabel"
+            android:text="How many do you need?"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:layout_below="@+id/itemName"
+            android:gravity="center_vertical"/>
+        <Button
+            android:text="+"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:id="@+id/add"
+            android:enabled="false"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="18sp"
+            android:text="1"
+            android:id="@+id/itemCount" />
+        <Button
+            android:text="-"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:id="@+id/sub"
+            android:enabled="false"/>
+    </LinearLayout>
+    <Button
+        android:text="Add to order"
+        android:layout_below="@id/quantityCounterPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addOrderBtn"
+        android:enabled="false"/>
+    <TextView
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listLabel"
+        android:text="Order List"
+        android:layout_below="@id/addOrderBtn"
+        android:padding="10dp"
+        android:textSize="18sp"/>
+    <Button
+        android:text="Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nextBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#32CD32"
+        android:textSize="18sp"
+        android:id="@+id/totalCost"
+        android:text="0"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_alignBaseline="@id/totalCostLabel"
+        android:layout_alignBottom="@id/totalCostLabel" />
+    <TextView
+        android:id="@+id/totalCostLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#32CD32"
+        android:text="Total Cost: $"
+        android:textSize="18sp"
+        android:layout_toLeftOf="@id/totalCost"
+        android:layout_above="@+id/nextBtn" />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_below="@+id/listLabel"
+        android:id="@+id/orderRecycler"
+        android:layout_above="@id/totalCostLabel" />
+
+</RelativeLayout>

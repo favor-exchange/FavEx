@@ -50,7 +50,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         return 0;
     }
 
-    class FavorViewHolder extends RecyclerView.ViewHolder
+    public class FavorViewHolder extends RecyclerView.ViewHolder
     {
         private ImageView mLocationImage;
         private TextView mPrice;

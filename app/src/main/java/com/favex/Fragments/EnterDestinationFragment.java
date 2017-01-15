@@ -70,8 +70,8 @@ public class EnterDestinationFragment extends Fragment implements currentLocatio
                                             R.id.verticalQuestionViewPager + ":" + ((FavorFormActivity)getActivity()).
                                             getVerticalViewPager().getCurrentItem());
                             //FIGURING OUT THE ABOVE LINE WAS HELL
-                            //more importantly, method needs revision as it depends upon implementation in android library
-                            //method would not work if updates were to occur
+                            //More importantly, method needs revision as it depends upon implementation in android library
+                            //Method would not work if updates were to occur
                             dialogFragment.setTargetFragment(fragmentInstance,0);
                             dialogFragment.setArguments(possibleLocations);
                             dialogFragment.show(fm, "Dialog Fragment");

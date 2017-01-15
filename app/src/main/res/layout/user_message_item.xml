@@ -9,11 +9,10 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/mybubble"
     android:layout_gravity="end"
     android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true">
-
+    android:layout_alignParentEnd="true"
+    android:background="@drawable/mybubble">
     <TextView
         android:text="test"
         android:layout_width="wrap_content"

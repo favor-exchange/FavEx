@@ -1,6 +1,5 @@
 package com.favex.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.favex.Activities.FavorFormActivity;
-import com.favex.Interfaces.favorFormInterface;
 import com.favex.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -33,11 +31,9 @@ public class EnterLocationFragment extends Fragment {
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText mLocation;
     private Button mNext;
-    private favorFormInterface listener;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        listener = (favorFormInterface) context;
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -62,7 +58,7 @@ public class EnterLocationFragment extends Fragment {
         mNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onNext(1,((FavorFormActivity)getActivity()).getVerticalViewPager());
+                ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(2);
             }
         });
         return view;

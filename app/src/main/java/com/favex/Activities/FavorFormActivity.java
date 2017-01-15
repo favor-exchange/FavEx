@@ -1,28 +1,18 @@
 package com.favex.Activities;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.favex.Adapters.QuestionFragmentAdapter;
-import com.favex.Interfaces.favorFormInterface;
 import com.favex.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-
-import java.util.Locale;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
@@ -30,8 +20,7 @@ import fr.castorflex.android.verticalviewpager.VerticalViewPager;
  * Created by Tavish on 08-Jan-17.
  */
 
-public class FavorFormActivity extends AppCompatActivity implements favorFormInterface,
-        GoogleApiClient.OnConnectionFailedListener  {
+public class FavorFormActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener  {
     private static final float MIN_SCALE = 0.75f;
     private static final float MIN_ALPHA = 0.75f;
     VerticalViewPager mVerticalQuestionViewPager;
@@ -109,12 +98,6 @@ public class FavorFormActivity extends AppCompatActivity implements favorFormInt
     public GoogleApiClient getGoogleApiClient()
     {
         return mGoogleApiClient;
-    }
-
-    @Override
-    public void onNext(int fragmentPos, VerticalViewPager v) {
-        v.setCurrentItem(fragmentPos+1);
-        Toast.makeText(this,"Successful fragment callback!",Toast.LENGTH_SHORT).show();
     }
 
     @Override
