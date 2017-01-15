@@ -18,6 +18,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.favex.R;
+import com.favex.Services.ChatService;
 
 public class login extends AppCompatActivity {
 
@@ -25,7 +26,7 @@ public class login extends AppCompatActivity {
     private LoginButton loginButton;
     private CallbackManager cbm;
     private AccessToken accessToken;
-    private Button tmpSkip; //DELETE IN PRODUCTION
+    private Button tmpSkip; //DELET THIS, THIS IS BAD CONTENT
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +42,6 @@ public class login extends AppCompatActivity {
             }
         });
         cbm = CallbackManager.Factory.create();
-
-        SharedPreferences prefs = login.this.getSharedPreferences(
-                "com.favex", Context.MODE_PRIVATE);
 
         setContentView(R.layout.activity_login);
 
@@ -90,6 +88,10 @@ public class login extends AppCompatActivity {
 
                 prefs.edit().putString("facebookId", loginResult.getAccessToken().getUserId()).apply();
                 prefs.edit().putString("facebookAccessToken", loginResult.getAccessToken().getToken()).apply();
+
+                Intent mServiceIntent = new Intent(login.this, ChatService.class);
+                mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
+                startService(mServiceIntent);
 
                 Intent in = new Intent(login.this, MainActivity.class);
                 startActivity(in);

@@ -72,6 +72,8 @@ public class databaseHelper extends SQLiteOpenHelper {
     public boolean insertUser(String sender, String facebookId){
         SQLiteDatabase db = this.getWritableDatabase();
 
+        db.delete(TABLE_NAME_USERS, "FACEBOOKID = " + "\"" + facebookId + "\"", null);
+
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_NAME_SENDER, sender);
         cv.put(COLUMN_NAME_FBID, facebookId);

@@ -1,6 +1,8 @@
 package com.favex.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -12,16 +14,21 @@ import android.widget.Toast;
 
 import com.favex.R;
 import com.favex.Adapters.TabFragmentPagerAdapter;
+import com.favex.Services.ChatService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mAddFavor;
+    private SharedPreferences prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = getSharedPreferences(
+                "com.favex", Context.MODE_PRIVATE);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 

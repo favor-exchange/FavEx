@@ -1,5 +1,6 @@
 package com.favex.Adapters;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +17,10 @@ import com.favex.R;
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Cursor messages;
+    private String myFacebookId;
 
-    public MessagesRecyclerAdapter(Cursor res){
+    public MessagesRecyclerAdapter(Cursor res, String fbId){
+        myFacebookId = fbId;
         messages = res;
     }
 
@@ -63,8 +66,8 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         messages.moveToPosition(position);
         String sender = messages.getString(4);
 
-        //check if sender is equal to users fbid to display messages as own
-        if(sender.compareTo("test") == 0){
+
+        if(sender.compareTo(myFacebookId) == 0){
             return 0;
         }
         return 1;

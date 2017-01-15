@@ -1,6 +1,8 @@
 package com.favex.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 
 public class MessagesActivity extends AppCompatActivity{
@@ -37,16 +40,26 @@ public class MessagesActivity extends AppCompatActivity{
     private FloatingActionButton mSendButton;
     private Socket mSocket;
 
+    private SharedPreferences prefs;
+
+    private String senderFacebookId;
+    private String senderName;
+    private String myFacebookId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
         Intent in = getIntent();
-        final String facebookId = in.getStringExtra("facebookId");
-        final String mSender = in.getStringExtra("sender");
+        senderFacebookId = in.getStringExtra("facebookId");
+        senderName = in.getStringExtra("sender");
 
-        getSupportActionBar().setTitle(facebookId);
+        getSupportActionBar().setTitle(senderName);
+
+        prefs = this.getSharedPreferences(
+                "com.favex", Context.MODE_PRIVATE);
+        myFacebookId = prefs.getString("facebookId", "default");
 
         mEditText = (EditText) findViewById(R.id.enter_message);
         mSendButton = (FloatingActionButton) findViewById(R.id.send_button);
@@ -59,8 +72,8 @@ public class MessagesActivity extends AppCompatActivity{
         llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
 
-        messages = dbh.getMessagesByFacebookId(facebookId);
-        mAdapter = new MessagesRecyclerAdapter(messages);
+        messages = dbh.getMessagesByFacebookId(senderFacebookId);
+        mAdapter = new MessagesRecyclerAdapter(messages, myFacebookId);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
 
@@ -86,28 +99,29 @@ public class MessagesActivity extends AppCompatActivity{
                 int year = cal.get(Calendar.YEAR);
                 String date = String.valueOf(day) + String.valueOf(month) + String.valueOf(year);
 
-                String recipient = mSender;
-
-                String sender = "me"; //change to useful value later
+                String sender = "Shayan Imran"; //change to useful value later
 
                 JSONObject mJSON = new JSONObject();
+
                 try {
                     mJSON.put("message",message);
-                    mJSON.put("sender", sender);
-                    mJSON.put("recipient", recipient);
-                    mJSON.put("facebookId", "MY FBID");
+                    mJSON.put("sender", sender); //my name
+                    mJSON.put("recipient", senderFacebookId); //fb id of other person
+                    mJSON.put("facebookId", myFacebookId); //my fb id
                     mJSON.put("time", time);
                     mJSON.put("date", date);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 //in db stores other persons fb id but sends own fb id in json object
                 mSocket.emit("new message", mJSON);
-                //sender in local db should be my fb id to display messages correctly
-                dbh.insertMessage(message, "MyFbId", facebookId, time, date);
-                messages = dbh.getMessagesByFacebookId(facebookId);
 
-                mAdapter = new MessagesRecyclerAdapter(messages);
+                //sender in local db should be my fb id to display messages correctly
+                dbh.insertMessage(message, myFacebookId, senderFacebookId, time, date);
+                messages = dbh.getMessagesByFacebookId(senderFacebookId);
+
+                mAdapter = new MessagesRecyclerAdapter(messages, myFacebookId);
 
                 mRecyclerView.swapAdapter(mAdapter, true);
                 mRecyclerView.getLayoutManager().scrollToPosition(mAdapter.getItemCount()-1);
