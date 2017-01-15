@@ -23,7 +23,7 @@ public class LocationPicker extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        listener.onLocationPicked(getArguments().getStringArray("locationIds")[which]);
+                        listener.onLocationPicked(which);
                         dismiss();
                     }
                 });

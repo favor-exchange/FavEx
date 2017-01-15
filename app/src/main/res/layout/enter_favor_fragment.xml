@@ -105,28 +105,27 @@
         android:id="@+id/nextBtn"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#32CD32"
+        android:textColor="@color/currencyColor"
         android:textSize="18sp"
         android:id="@+id/totalCost"
         android:text="0"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_alignBaseline="@id/totalCostLabel"
-        android:layout_alignBottom="@id/totalCostLabel" />
+        android:layout_above="@+id/nextBtn"
+        android:layout_marginTop="@dimen/activity_horizontal_margin" />
     <TextView
         android:id="@+id/totalCostLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#32CD32"
+        android:textColor="@color/currencyColor"
         android:text="Total Cost: $"
         android:textSize="18sp"
         android:layout_toLeftOf="@id/totalCost"
         android:layout_above="@+id/nextBtn" />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

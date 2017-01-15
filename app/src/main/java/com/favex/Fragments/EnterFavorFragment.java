@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.favex.Activities.FavorFormActivity;
 import com.favex.Adapters.OrderRecyclerAdapter;
 import com.favex.POJOs.OrderItem;
 import com.favex.R;
@@ -31,6 +33,7 @@ public class EnterFavorFragment extends Fragment {
     private Button mAdd;
     private Button mSub;
     private Button mAddOrderBtn;
+    private Button mNextBtn;
     private TextView mItemCount;
     private TextView mTotalCost;
     private RecyclerView mOrderRecycler;
@@ -44,6 +47,7 @@ public class EnterFavorFragment extends Fragment {
         mItemCount= (TextView)view.findViewById(R.id.itemCount);
         mAdd= (Button)view.findViewById(R.id.add);
         mSub= (Button)view.findViewById(R.id.sub);
+        mNextBtn= (Button)view.findViewById(R.id.nextBtn);
         mTotalCost= (TextView)view.findViewById(R.id.totalCost);
         mAddOrderBtn= (Button)view.findViewById(R.id.addOrderBtn);
         mOrderRecycler= (RecyclerView)view.findViewById(R.id.orderRecycler);
@@ -117,20 +121,28 @@ public class EnterFavorFragment extends Fragment {
                 OrderItem item= new OrderItem(mItemName.getText().toString(),
                         Float.parseFloat(mPrice.getText().toString())*Integer.parseInt(mItemCount.getText().toString()),
                         Integer.parseInt(mItemCount.getText().toString()));
+                ((FavorFormActivity)getActivity()).shallowCopyArrayList(orderItems);
                 orderItems.add(0,item);
                 orderRecyclerAdapter.notifyItemInserted(0);
-                mTotalCost.setText(String.valueOf(Integer.parseInt(mTotalCost.getText().toString())
-                        +Integer.parseInt(mPrice.getText().toString())*Integer.parseInt(mItemCount.getText().toString())));
+                mTotalCost.setText(String.valueOf(Float.parseFloat(mTotalCost.getText().toString())
+                        +Float.parseFloat(mPrice.getText().toString())*Integer.parseInt(mItemCount.getText().toString())));
+                ((FavorFormActivity)getActivity()).setTotalCost(Float.parseFloat(mTotalCost.getText().toString()));
+                Log.i("FAVOR FRAGMENT",String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
                 Toast.makeText(getActivity(),mItemName.getText()+" added to list of size "+
                         String.valueOf(orderItems.size()),Toast.LENGTH_SHORT).show();
             }
         });
+        mNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(3);
+            }
+        });
         return view;
     }
-    public ItemTouchHelper initSwipeToDismissHelper()
-    {
+    public ItemTouchHelper initSwipeToDismissHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -139,8 +151,10 @@ public class EnterFavorFragment extends Fragment {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 orderItems.remove(viewHolder.getAdapterPosition());
                 orderRecyclerAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                mTotalCost.setText(String.valueOf(Integer.parseInt(mTotalCost.getText().toString())
+                mTotalCost.setText(String.valueOf(Float.parseFloat(mTotalCost.getText().toString())
                         -orderItems.get(viewHolder.getAdapterPosition()).getCost()));
+                ((FavorFormActivity)getActivity()).setTotalCost(Float.parseFloat(mTotalCost.getText().toString()));
+                Log.i("FAVOR FRAGMENT",String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
             }
         };
         return new ItemTouchHelper(simpleItemTouchCallback);

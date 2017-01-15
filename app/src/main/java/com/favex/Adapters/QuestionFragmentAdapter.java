@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.favex.Fragments.EnterDestinationFragment;
 import com.favex.Fragments.EnterFavorFragment;
 import com.favex.Fragments.EnterLocationFragment;
+import com.favex.Fragments.EnterTipFragment;
 
 /**
  * Created by Tavish on 08-Jan-17.
@@ -27,6 +28,8 @@ public class QuestionFragmentAdapter extends FragmentPagerAdapter {
                 return new EnterDestinationFragment();
             case 2:
                 return new EnterFavorFragment();
+            case 3:
+                return new EnterTipFragment();
             default:
                 return null;
         }
@@ -34,6 +37,6 @@ public class QuestionFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 }

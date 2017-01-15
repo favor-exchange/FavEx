@@ -3,7 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:gravity="center">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/totalCostPanel">
+    <TextView
+        android:id="@+id/totalCostLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:text="Your total is "/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dollar"
+        android:text="$"
+        android:textColor="@color/currencyColor"
+        android:textSize="24sp"
+        android:layout_toRightOf="@id/totalCostLabel"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100.00"
+        android:textSize="24sp"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@id/dollar"
+        android:textColor="@color/currencyColor"
+        android:id="@+id/totalCost" />
+    </RelativeLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,6 +42,7 @@
         android:textAlignment="center"
         android:elegantTextHeight="true"
         android:textSize="18sp"
+        android:layout_below="@id/totalCostPanel"
         android:layout_centerHorizontal="true"/>
     <TextView
         android:layout_width="wrap_content"

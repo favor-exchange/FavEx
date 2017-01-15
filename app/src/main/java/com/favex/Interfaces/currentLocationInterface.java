@@ -5,5 +5,5 @@ package com.favex.Interfaces;
  */
 
 public interface currentLocationInterface {
-    void onLocationPicked(String placeId);
+    void onLocationPicked(int index);
 }

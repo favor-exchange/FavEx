@@ -8,11 +8,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.favex.Adapters.QuestionFragmentAdapter;
+import com.favex.POJOs.OrderItem;
 import com.favex.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
+
+import java.util.ArrayList;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
@@ -25,6 +28,11 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     private static final float MIN_ALPHA = 0.75f;
     VerticalViewPager mVerticalQuestionViewPager;
     private Place favorLocation;
+    private Place destination;
+    private String destinationDetails;
+    private ArrayList<OrderItem> orderItems;
+    private float totalCost;
+    private float tip;
     private GoogleApiClient mGoogleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +51,37 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     {
         favorLocation = place;
     }
-
+    public void setDestination(Place place)
+    {
+        destination = place;
+    }
+    public void setDestinationDetails(String value)
+    {
+        destinationDetails=value;
+    }
+    public void shallowCopyArrayList(ArrayList<OrderItem> listCopied)
+    {
+        orderItems= new ArrayList<>(listCopied);
+    }
+    public void setTotalCost(float cost)
+    {
+        totalCost=cost;
+    }
+    public void setTip(float t)
+    {
+        tip=t;
+    }
+    public float getTotalCost(){return totalCost;}
     public VerticalViewPager getVerticalViewPager()
     {
         return mVerticalQuestionViewPager;
     }
-
     public Place getFavorLocation()
     {
         return favorLocation;
     }
-    private void initVerticalViewPager(VerticalViewPager v, final float MIN_SCALE, final float MIN_ALPHA)
-    {
+    public Place getDestination(){return destination;}
+    private void initVerticalViewPager(VerticalViewPager v, final float MIN_SCALE, final float MIN_ALPHA) {
         v.setPageMargin(getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin));
         v.setAdapter(new QuestionFragmentAdapter(getSupportFragmentManager()));
         v.setPageTransformer(true, new ViewPager.PageTransformer() {
@@ -94,12 +121,10 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             }
         });
     }
-
     public GoogleApiClient getGoogleApiClient()
     {
         return mGoogleApiClient;
     }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this,"FATAL ERROR: GOOGLE PLAY SERVICES CONNECTION FAILED!",Toast.LENGTH_SHORT);

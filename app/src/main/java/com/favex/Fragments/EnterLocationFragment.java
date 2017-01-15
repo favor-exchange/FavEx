@@ -31,10 +31,7 @@ public class EnterLocationFragment extends Fragment {
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText mLocation;
     private Button mNext;
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view= inflater.inflate(R.layout.enter_location_fragment, container, false);
@@ -58,7 +55,7 @@ public class EnterLocationFragment extends Fragment {
         mNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(2);
+                ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(1,true);
             }
         });
         return view;
