@@ -16,7 +16,7 @@ public class ChatApplication extends Application {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://192.168.1.4:3000"); //temp ip until chat server is up
+            mSocket = IO.socket("http://54.201.173.243:3000"); //temp ip until chat server is up
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

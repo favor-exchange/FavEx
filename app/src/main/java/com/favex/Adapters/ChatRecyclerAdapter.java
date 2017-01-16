@@ -2,6 +2,7 @@ package com.favex.Adapters;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,10 +40,14 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
 
     @Override
     public void onBindViewHolder(final ChatViewHolder viewHolder, int position) {
-        users.moveToPosition(position);
+        users.moveToPosition(users.getCount() - position - 1);
 
         viewHolder.mName.setText(users.getString(1));
-        viewHolder.mDate.setText("temp");
+        if(users.getInt(4) == 0) {
+            viewHolder.mName.setTypeface(null, Typeface.BOLD);
+        }
+
+        viewHolder.mDate.setText(users.getString(3));
         viewHolder.mProfilePicture.setImageResource(R.mipmap.ic_launcher);
         viewHolder.mFacebookId = users.getString(2);
     }
@@ -51,9 +56,6 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     public int getItemCount() {
         return users.getCount();
     }
-
-
-
 
     public class ChatViewHolder extends RecyclerView.ViewHolder {
 

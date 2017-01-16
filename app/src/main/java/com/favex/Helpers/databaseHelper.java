@@ -20,6 +20,7 @@ public class databaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_TIME = "TIME";
     private static final String COLUMN_NAME_DATE = "DATE";
     private static final String COLUMN_NAME_MESSAGE = "MESSAGE";
+    private static final String COLUMN_NAME_READ = "READ";
 
 
 
@@ -32,7 +33,9 @@ public class databaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_NAME_USERS + " (" +
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
                     COLUMN_NAME_SENDER + TEXT_TYPE + COMMA_SEP +
-                    COLUMN_NAME_FBID + TEXT_TYPE + " )";
+                    COLUMN_NAME_FBID + TEXT_TYPE +  COMMA_SEP +
+                    COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
+                    COLUMN_NAME_READ + INTEGER_TYPE + " )";
 
     private static final String SQL_CREATE_MESSAGES =
             "CREATE TABLE " + TABLE_NAME_MESSAGES + " (" +
@@ -69,7 +72,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertUser(String sender, String facebookId){
+    public boolean insertUser(String sender, String facebookId, String date){
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_NAME_USERS, "FACEBOOKID = " + "\"" + facebookId + "\"", null);
@@ -77,11 +80,22 @@ public class databaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_NAME_SENDER, sender);
         cv.put(COLUMN_NAME_FBID, facebookId);
+        cv.put(COLUMN_NAME_DATE, date);
+        cv.put(COLUMN_NAME_READ, 0);
 
         if( db.insert(TABLE_NAME_USERS, null, cv) == -1){
             return false;
         }
         return true;
+    }
+
+    public void updateRead(String facebookId){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_NAME_READ, 1);
+
+        db.update(TABLE_NAME_USERS, cv, "FACEBOOKID = " + "\"" + facebookId + "\"", null);
     }
 
     public boolean insertMessage(String message, String sender, String facebookId, String time, String date){

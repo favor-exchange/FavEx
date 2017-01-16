@@ -1,5 +1,6 @@
 package com.favex.Activities;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
         prefs = getSharedPreferences(
                 "com.favex", Context.MODE_PRIVATE);
 
+        if (!isMyServiceRunning(ChatService.class)) {
+
+            Intent mServiceIntent = new Intent(this, ChatService.class);
+            mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
+            startService(mServiceIntent);
+        }
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
         viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
@@ -49,5 +57,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(startFavorForm);
             }
         });
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.favex.Services;
 
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -28,6 +29,8 @@ import com.favex.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -127,14 +130,14 @@ public class ChatService extends Service {
         super.onDestroy();
         Log.e("ChatService", "Stopping");
 
-        mSocket.disconnect();
+        /*mSocket.disconnect();
 
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("new message", onNewMessage);
-        mSocket.off("stored messages", onStoredMessages);
+        mSocket.off("stored messages", onStoredMessages);*/
     }
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
@@ -178,12 +181,13 @@ public class ChatService extends Service {
                 String date = data.getString("date");
 
                 dbh.insertMessage(message, sender, facebookIdReceived, time, date);
-                dbh.insertUser(sender, facebookIdReceived);
+                dbh.insertUser(sender, facebookIdReceived, date);
 
-                if(true) {
-                    pushNotification(sender, message);
-                }
+                Intent in = new Intent();
+                in.setAction("com.favex.NEW_MESSAGE");
+                sendBroadcast(in);
 
+                pushNotification(sender, message);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -212,7 +216,7 @@ public class ChatService extends Service {
                         String date = data.getJSONObject(i).getString("date");
 
                         dbh.insertMessage(message, sender, facebookIdReceived, time, date);
-                        dbh.insertUser(sender, facebookIdReceived);
+                        dbh.insertUser(sender, facebookIdReceived, date);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -229,6 +233,9 @@ public class ChatService extends Service {
 
             if(data.length() != 0)
             {
+                Intent in = new Intent();
+                in.setAction("com.favex.NEW_MESSAGE");
+                sendBroadcast(in);
                 pushNotification("Chat", "New Messages");
             }
         }
