@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.favex.Activities.FavorFormActivity;
+import com.favex.Interfaces.postFavorInterface;
 import com.favex.R;
 
 /**
@@ -24,6 +25,7 @@ public class EnterTipFragment extends Fragment {
     private TextView mTotalCost;
     private EditText mTip;
     private Button mConfirmBtn;
+    private postFavorInterface postInterface;
 
     @Override
     public void setUserVisibleHint(boolean visible)
@@ -40,7 +42,7 @@ public class EnterTipFragment extends Fragment {
         View view = inflater.inflate(R.layout.enter_tip, container, false);
         mTotalCost= (TextView)view.findViewById(R.id.totalCost);
         mTotalCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
-        Log.i("TIP FRAGMENT",String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
+        postInterface= (postFavorInterface)getActivity();
         mTip= (EditText)view.findViewById(R.id.tip);
         mConfirmBtn= (Button)view.findViewById(R.id.confirmBtn);
         mTip.addTextChangedListener(new TextWatcher() {
@@ -62,6 +64,7 @@ public class EnterTipFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ((FavorFormActivity)getActivity()).setTip(Float.parseFloat(mTip.getText().toString().trim()));
+                postInterface.postFavorToServer();
             }
         });
         return view;

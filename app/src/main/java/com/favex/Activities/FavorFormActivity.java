@@ -4,26 +4,39 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.favex.Adapters.QuestionFragmentAdapter;
+import com.favex.ApiClient;
+import com.favex.Interfaces.postFavorInterface;
 import com.favex.POJOs.OrderItem;
 import com.favex.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
+import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by Tavish on 08-Jan-17.
  */
 
-public class FavorFormActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener  {
+public class FavorFormActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
+        postFavorInterface
+{
     private static final float MIN_SCALE = 0.75f;
     private static final float MIN_ALPHA = 0.75f;
     VerticalViewPager mVerticalQuestionViewPager;
@@ -129,5 +142,45 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this,"FATAL ERROR: GOOGLE PLAY SERVICES CONNECTION FAILED!",Toast.LENGTH_SHORT);
         //TODO: Provide more sophisticated implementation before submission
+    }
+
+    @Override
+    public void postFavorToServer() {
+
+        try
+        {
+            //test object
+            JSONObject favorJSON= new JSONObject();
+            favorJSON.put("locationFavor",new JSONObject().put("lat",1).put("lng",1));
+            favorJSON.put("locationRecipient",new JSONObject().put("lat",1).put("lng",1));
+            favorJSON.put("isComplete",false);
+            favorJSON.put("title","a");
+            favorJSON.put("details","b");
+            favorJSON.put("priceRange",new JSONObject().put("min",1).put("max",2));
+            favorJSON.put("tip",1);
+            //additional encapsulation due to nested structure - may need further revision
+            JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);
+            ApiClient.addFavor(favorMainJSON).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if(Boolean.parseBoolean(response.body().string())) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(FavorFormActivity.this,"Favor added successfully",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        catch (JSONException e)
+        {
+            Log.i("FavorFormJsonException",e.toString());
+        }
     }
 }
