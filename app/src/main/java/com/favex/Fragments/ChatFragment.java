@@ -1,16 +1,16 @@
 package com.favex.Fragments;
 
+
+import android.app.ActivityManager;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,21 +18,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.favex.Activities.MainActivity;
 import com.favex.Adapters.ChatRecyclerAdapter;
-import com.favex.Applications.ChatApplication;
 import com.favex.Helpers.databaseHelper;
 import com.favex.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
+import java.util.List;
 
 /**
  * Created by Tavish on 06-Jan-17.
@@ -43,12 +33,14 @@ public class ChatFragment extends Fragment
 
     private RecyclerView mChatsRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
 
     boolean isInFront;
 
     private Cursor users;
     private databaseHelper dbh;
+    private NotificationManager mNotificationManager;
+    private Receiver mReceiver;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -72,21 +64,53 @@ public class ChatFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mNotificationManager =  (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.e("onResume", "called");
+
+        mNotificationManager.cancelAll();
+
+        mReceiver = new Receiver();
+
+        IntentFilter filter = new IntentFilter("com.favex.NEW_MESSAGE");
+        getActivity().registerReceiver(mReceiver, filter);
+
+        users = dbh.getAllChats();
+        mAdapter = new ChatRecyclerAdapter(users);
+
+        mChatsRecyclerView.setAdapter(mAdapter);
+        mChatsRecyclerView.getLayoutManager();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         isInFront = false;
+
+        getActivity().unregisterReceiver(mReceiver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private class Receiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            users = dbh.getAllChats();
+
+            mAdapter = new ChatRecyclerAdapter(users);
+
+            mChatsRecyclerView.swapAdapter(mAdapter, false  );
+            mChatsRecyclerView.getLayoutManager();
+        }
     }
 }

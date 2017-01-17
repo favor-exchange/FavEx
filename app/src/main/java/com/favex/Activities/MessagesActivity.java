@@ -1,7 +1,9 @@
 package com.favex.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
@@ -45,6 +47,7 @@ public class MessagesActivity extends AppCompatActivity{
     private String senderFacebookId;
     private String senderName;
     private String myFacebookId;
+    private Receiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +64,17 @@ public class MessagesActivity extends AppCompatActivity{
                 "com.favex", Context.MODE_PRIVATE);
         myFacebookId = prefs.getString("facebookId", "default");
 
+        mReceiver = new Receiver();
+
+        IntentFilter filter = new IntentFilter("com.favex.NEW_MESSAGE");
+        registerReceiver(mReceiver, filter);
+
         mEditText = (EditText) findViewById(R.id.enter_message);
         mSendButton = (FloatingActionButton) findViewById(R.id.send_button);
 
         dbh = new databaseHelper(this);
+
+        dbh.updateRead(senderFacebookId);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.messages_recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -128,5 +138,25 @@ public class MessagesActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class Receiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            messages = dbh.getMessagesByFacebookId(senderFacebookId);
+
+            mAdapter = new MessagesRecyclerAdapter(messages, myFacebookId);
+
+            mRecyclerView.swapAdapter(mAdapter, true);
+            mRecyclerView.getLayoutManager().scrollToPosition(mAdapter.getItemCount()-1);
+            dbh.updateRead(senderFacebookId);
+        }
     }
 }

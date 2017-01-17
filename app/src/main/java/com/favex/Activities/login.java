@@ -36,6 +36,14 @@ public class login extends AppCompatActivity {
             @Override
             public void onInitialized() {
                 if(isLoggedIn()){
+
+                    /*SharedPreferences prefs = login.this.getSharedPreferences(
+                            "com.favex", Context.MODE_PRIVATE);
+
+                    Intent mServiceIntent = new Intent(login.this, ChatService.class);
+                    mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
+                    startService(mServiceIntent);*/
+
                     startActivity(new Intent(login.this, MainActivity.class));
                     finish();
                 }
