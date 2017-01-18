@@ -34,7 +34,6 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
         OrderItem item= orderItems.get(position);
         holder.mItemName.setText(item.getItemName());
         holder.mQuantity.setText(String.valueOf(item.getQuantity()));
-        holder.mCost.setText(String.valueOf(item.getCost()));
     }
 
     @Override

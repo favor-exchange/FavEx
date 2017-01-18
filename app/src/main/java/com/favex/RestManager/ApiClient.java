@@ -1,4 +1,4 @@
-package com.favex;
+package com.favex.RestManager;
 
 import org.json.JSONObject;
 

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 
 public class EnterFavorFragment extends Fragment {
     private EditText mItemName;
-    private EditText mPrice;
     private Button mAdd;
     private Button mSub;
     private Button mAddOrderBtn;
@@ -43,7 +42,6 @@ public class EnterFavorFragment extends Fragment {
         View view = inflater.inflate(R.layout.enter_favor_fragment, container, false);
         orderItems= new ArrayList<>();
         mItemName= (EditText)view.findViewById(R.id.itemName);
-        mPrice= (EditText)view.findViewById(R.id.price);
         mItemCount= (TextView)view.findViewById(R.id.itemCount);
         mAdd= (Button)view.findViewById(R.id.add);
         mSub= (Button)view.findViewById(R.id.sub);
@@ -63,12 +61,12 @@ public class EnterFavorFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
                 if(!mAdd.isEnabled()&& !mAddOrderBtn.isEnabled() &&
-                        charSequence.length()>0 && mPrice.getText().length()>0)
+                        charSequence.length()>0)
                 {
                     mAdd.setEnabled(true);
                     mAddOrderBtn.setEnabled(true);
                 }
-                else if(charSequence.length()<1 || mPrice.getText().length()<1)
+                else if(charSequence.length()<1)
                 {
                     mAdd.setEnabled(false);
                     mAddOrderBtn.setEnabled(false);
@@ -78,26 +76,6 @@ public class EnterFavorFragment extends Fragment {
             public void afterTextChanged(Editable editable) {}
         });
 
-        mPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(!mAdd.isEnabled()&& !mAddOrderBtn.isEnabled() &&
-                        charSequence.length()>0 && mItemName.getText().length()>0)
-                {
-                    mAdd.setEnabled(true);
-                    mAddOrderBtn.setEnabled(true);
-                }
-                else if(charSequence.length()<1 && mItemName.getText().length()<1)
-                {
-                    mAdd.setEnabled(false);
-                    mAddOrderBtn.setEnabled(false);
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
         mAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,15 +97,10 @@ public class EnterFavorFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 OrderItem item= new OrderItem(mItemName.getText().toString(),
-                        Float.parseFloat(mPrice.getText().toString())*Integer.parseInt(mItemCount.getText().toString()),
                         Integer.parseInt(mItemCount.getText().toString()));
                 ((FavorFormActivity)getActivity()).shallowCopyArrayList(orderItems);
                 orderItems.add(0,item);
                 orderRecyclerAdapter.notifyItemInserted(0);
-                mTotalCost.setText(String.valueOf(Float.parseFloat(mTotalCost.getText().toString())
-                        +Float.parseFloat(mPrice.getText().toString())*Integer.parseInt(mItemCount.getText().toString())));
-                ((FavorFormActivity)getActivity()).setTotalCost(Float.parseFloat(mTotalCost.getText().toString()));
-                Log.i("FAVOR FRAGMENT",String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
                 Toast.makeText(getActivity(),mItemName.getText()+" added to list of size "+
                         String.valueOf(orderItems.size()),Toast.LENGTH_SHORT).show();
             }
@@ -151,10 +124,6 @@ public class EnterFavorFragment extends Fragment {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 orderItems.remove(viewHolder.getAdapterPosition());
                 orderRecyclerAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                mTotalCost.setText(String.valueOf(Float.parseFloat(mTotalCost.getText().toString())
-                        -orderItems.get(viewHolder.getAdapterPosition()).getCost()));
-                ((FavorFormActivity)getActivity()).setTotalCost(Float.parseFloat(mTotalCost.getText().toString()));
-                Log.i("FAVOR FRAGMENT",String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
             }
         };
         return new ItemTouchHelper(simpleItemTouchCallback);

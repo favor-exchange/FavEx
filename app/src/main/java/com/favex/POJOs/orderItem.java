@@ -6,18 +6,14 @@ package com.favex.POJOs;
 
 public class OrderItem {
     private String itemName;
-    private float cost;
     private int quantity;
-    public OrderItem(String n, float c, int q)
+    public OrderItem(String n,int q)
     {
         itemName=n;
-        cost=c;
         quantity=q;
     }
     public String getItemName(){return itemName;}
-    public float getCost(){return cost;}
     public int getQuantity(){return quantity;}
     public void setItemName(String value){itemName=value;}
-    public void setCost(float value){cost=value;}
     public void setQuantity(int value){quantity=value;}
 }

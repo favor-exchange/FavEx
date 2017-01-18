@@ -1,4 +1,4 @@
-package com.favex;
+package com.favex.RestManager;
 
 import okhttp3.OkHttpClient;
 

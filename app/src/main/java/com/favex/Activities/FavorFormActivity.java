@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.favex.Adapters.QuestionFragmentAdapter;
-import com.favex.ApiClient;
+import com.favex.RestManager.ApiClient;
 import com.favex.Interfaces.postFavorInterface;
 import com.favex.POJOs.OrderItem;
 import com.favex.R;
@@ -17,7 +17,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -149,6 +148,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
 
         try
         {
+            /*
             //test object
             JSONObject favorJSON= new JSONObject();
             favorJSON.put("locationFavor",new JSONObject().put("lat",1).put("lng",1));
@@ -159,7 +159,17 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             favorJSON.put("priceRange",new JSONObject().put("min",1).put("max",2));
             favorJSON.put("tip",1);
             //additional encapsulation due to nested structure - may need further revision
+            JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);*/
+            JSONObject favorJSON= new JSONObject();
+            favorJSON.put("locationFavorId",favorLocation.getId());
+            favorJSON.put("locationRecipientId",destination.getId());
+            favorJSON.put("isComplete",false);
+            favorJSON.put("title","a");
+            favorJSON.put("details","b");
+            favorJSON.put("priceRange",new JSONObject().put("min",1).put("max",2));
+            favorJSON.put("tip",1);
             JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);
+
             ApiClient.addFavor(favorMainJSON).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
