@@ -74,7 +74,8 @@
             android:hint="Enter tip amount"
             android:id="@+id/tip"
             android:layout_toEndOf="@id/dollar"
-            android:layout_toRightOf="@id/dollar"/>
+            android:layout_toRightOf="@id/dollar"
+            android:inputType="number"/>
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"

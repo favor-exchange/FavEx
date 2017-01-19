@@ -3,6 +3,8 @@ package com.favex.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +17,15 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.favex.R;
 import com.favex.Services.ChatService;
+
+import org.json.JSONObject;
 
 public class login extends AppCompatActivity {
 
@@ -36,13 +43,6 @@ public class login extends AppCompatActivity {
             @Override
             public void onInitialized() {
                 if(isLoggedIn()){
-
-                    /*SharedPreferences prefs = login.this.getSharedPreferences(
-                            "com.favex", Context.MODE_PRIVATE);
-
-                    Intent mServiceIntent = new Intent(login.this, ChatService.class);
-                    mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
-                    startService(mServiceIntent);*/
 
                     startActivity(new Intent(login.this, MainActivity.class));
                     finish();
