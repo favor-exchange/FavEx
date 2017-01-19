@@ -8,6 +8,7 @@ import com.favex.Fragments.EnterDestinationFragment;
 import com.favex.Fragments.EnterFavorFragment;
 import com.favex.Fragments.EnterLocationFragment;
 import com.favex.Fragments.EnterTipFragment;
+import com.favex.Fragments.EnterTitleFragment;
 
 /**
  * Created by Tavish on 08-Jan-17.
@@ -30,6 +31,8 @@ public class QuestionFragmentAdapter extends FragmentPagerAdapter {
                 return new EnterFavorFragment();
             case 3:
                 return new EnterTipFragment();
+            case 4:
+                return new EnterTitleFragment();
             default:
                 return null;
         }
@@ -37,6 +40,6 @@ public class QuestionFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 }

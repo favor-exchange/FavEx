@@ -46,12 +46,10 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
 
     public class OrderViewHolder extends RecyclerView.ViewHolder{
         private TextView mItemName;
-        private TextView mCost;
         private TextView mQuantity;
         public OrderViewHolder(View itemView) {
             super(itemView);
             mItemName= (TextView)itemView.findViewById(R.id.itemName);
-            mCost= (TextView)itemView.findViewById(R.id.cost);
             mQuantity= (TextView)itemView.findViewById(R.id.quantity);
         }
     }

@@ -13,7 +13,7 @@ import okhttp3.RequestBody;
  */
 
 public class ApiClient {
-    private static String baseUrl="192.168.1.103"; //testing on local machine but request was successful on aws too
+    private static String baseUrl="192.168.1.100"; //testing on local machine but request was successful on aws too
     private static int port= 3000;
     private static String addFavorEndpoint= "addFavor";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");

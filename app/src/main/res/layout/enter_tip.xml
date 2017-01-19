@@ -9,30 +9,56 @@
         android:gravity="center"
         android:id="@+id/totalCostPanel">
     <TextView
-        android:id="@+id/totalCostLabel"
+        android:id="@+id/costLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:text="Your total is "/>
+        android:text="Your total is between "/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dollar"
+        android:id="@+id/minDollar"
         android:text="$"
         android:textColor="@color/currencyColor"
-        android:textSize="24sp"
-        android:layout_toRightOf="@id/totalCostLabel"
+        android:textSize="20sp"
+        android:layout_toRightOf="@id/costLabel"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100.00"
-        android:textSize="24sp"
+        android:text="0"
+        android:textSize="20sp"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_toRightOf="@id/dollar"
+        android:layout_toRightOf="@id/minDollar"
         android:textColor="@color/currencyColor"
-        android:id="@+id/totalCost" />
+        android:id="@+id/minCost" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" and "
+        android:textSize="20sp"
+        android:layout_toRightOf="@id/minCost"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:id="@+id/costConjunction"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/maxDollar"
+        android:text="$"
+        android:textColor="@color/currencyColor"
+        android:textSize="20sp"
+        android:layout_toRightOf="@id/costConjunction"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100"
+        android:textSize="20sp"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@id/maxDollar"
+        android:textColor="@color/currencyColor"
+        android:id="@+id/maxCost" />
     </RelativeLayout>
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +73,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="We recommend at least 10% of your total cost"
+        android:text="We recommend 10% of your median cost"
         android:textAlignment="center"
         android:layout_marginTop="8dp"
         android:gravity="center"
@@ -66,36 +92,25 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:padding="10dp"
-            android:id="@+id/dollar"
+            android:id="@+id/dollarTip"
             android:text="$"/>
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Enter tip amount"
             android:id="@+id/tip"
-            android:layout_toEndOf="@id/dollar"
-            android:layout_toRightOf="@id/dollar"/>
+            android:layout_toEndOf="@id/dollarTip"
+            android:layout_toRightOf="@id/dollarTip"
+            android:inputType="numberDecimal" />
     </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/confirmationPanel"
+        android:layout_marginTop="26dp"
+        android:text="Next"
+        android:enabled="false"
         android:layout_below="@+id/inputTipPanel"
-        android:layout_marginTop="24dp"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin">
-        <Button
-            android:text="Cancel"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/cancelBtn"/>
-        <Button
-            android:text="Confirm Request"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/confirmBtn"
-            android:enabled="false"/>
-    </LinearLayout>
+        android:layout_centerHorizontal="true"
+        android:id="@+id/nextBtn" />
 </RelativeLayout>
