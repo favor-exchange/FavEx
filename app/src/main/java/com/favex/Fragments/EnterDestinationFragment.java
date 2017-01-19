@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +69,20 @@ public class EnterDestinationFragment extends Fragment implements currentLocatio
             public void onClick(View view) {
                 ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(2);
             }
+        });
+        mAddDetails.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().trim().length()>0)
+                    ((FavorFormActivity)getActivity()).setDestinationDetails(charSequence
+                            .toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
         });
         mDestination.setOnClickListener(new View.OnClickListener() {
             @Override

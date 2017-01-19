@@ -22,49 +22,52 @@ import com.favex.R;
  */
 
 public class EnterTipFragment extends Fragment {
-    private TextView mTotalCost;
     private EditText mTip;
-    private Button mConfirmBtn;
-    private postFavorInterface postInterface;
-
+    private Button mNextBtn;
+    private TextView mMinCost;
+    private TextView mMaxCost;
     @Override
     public void setUserVisibleHint(boolean visible)
     {
         super.setUserVisibleHint(visible);
         if (visible && isResumed())
         {
-            mTotalCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
-            Log.i("TIP FRAGMENT",String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
+            mMinCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getPriceRange()[0]));
+            mMaxCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getPriceRange()[1]));
+            if(Integer.parseInt(mMaxCost.getText().toString())==500)
+                mMaxCost.setText(mMaxCost.getText()+"+");
         }
     }
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.enter_tip, container, false);
-        mTotalCost= (TextView)view.findViewById(R.id.totalCost);
-        mTotalCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getTotalCost()));
-        postInterface= (postFavorInterface)getActivity();
         mTip= (EditText)view.findViewById(R.id.tip);
-        mConfirmBtn= (Button)view.findViewById(R.id.confirmBtn);
+        mMinCost= (TextView)view.findViewById(R.id.minCost);
+        mMaxCost= (TextView)view.findViewById(R.id.maxCost);
+        mNextBtn= (Button)view.findViewById(R.id.nextBtn);
+        mMinCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getPriceRange()[0]));
+        mMaxCost.setText(String.valueOf(((FavorFormActivity)getActivity()).getPriceRange()[1]));
+        if(Integer.parseInt(mMaxCost.getText().toString())==500)
+            mMaxCost.setText(mMaxCost.getText()+"+");
         mTip.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
-                if(charSequence.toString().trim().length()<1)
-                    mConfirmBtn.setEnabled(false);
-                else if(!mConfirmBtn.isEnabled()&&charSequence.toString().trim().length()>0)
-                    mConfirmBtn.setEnabled(true);
+                if(!mNextBtn.isEnabled()&&charSequence.toString().trim().length()>0)
+                    mNextBtn.setEnabled(true);
+                else if(charSequence.toString().trim().length()<=0)
+                    mNextBtn.setEnabled(false);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {}
         });
-        mConfirmBtn.setOnClickListener(new View.OnClickListener() {
+        mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((FavorFormActivity)getActivity()).setTip(Float.parseFloat(mTip.getText().toString().trim()));
-                postInterface.postFavorToServer();
+                ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(4);
             }
         });
         return view;

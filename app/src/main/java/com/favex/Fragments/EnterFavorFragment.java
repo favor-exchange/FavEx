@@ -19,7 +19,10 @@ import android.widget.Toast;
 import com.favex.Activities.FavorFormActivity;
 import com.favex.Adapters.OrderRecyclerAdapter;
 import com.favex.POJOs.OrderItem;
+import com.favex.PriceRangeSeekBar;
 import com.favex.R;
+
+import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 
@@ -34,10 +37,10 @@ public class EnterFavorFragment extends Fragment {
     private Button mAddOrderBtn;
     private Button mNextBtn;
     private TextView mItemCount;
-    private TextView mTotalCost;
     private RecyclerView mOrderRecycler;
     private OrderRecyclerAdapter orderRecyclerAdapter;
     private ArrayList<OrderItem> orderItems;
+    private PriceRangeSeekBar mPriceRange;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.enter_favor_fragment, container, false);
         orderItems= new ArrayList<>();
@@ -46,7 +49,7 @@ public class EnterFavorFragment extends Fragment {
         mAdd= (Button)view.findViewById(R.id.add);
         mSub= (Button)view.findViewById(R.id.sub);
         mNextBtn= (Button)view.findViewById(R.id.nextBtn);
-        mTotalCost= (TextView)view.findViewById(R.id.totalCost);
+        mPriceRange= (PriceRangeSeekBar)view.findViewById(R.id.priceRange);
         mAddOrderBtn= (Button)view.findViewById(R.id.addOrderBtn);
         mOrderRecycler= (RecyclerView)view.findViewById(R.id.orderRecycler);
         orderRecyclerAdapter= new OrderRecyclerAdapter(getActivity(),orderItems);
@@ -55,6 +58,13 @@ public class EnterFavorFragment extends Fragment {
         mOrderRecycler.setAdapter(orderRecyclerAdapter);
         ItemTouchHelper itemTouchHelper= initSwipeToDismissHelper();
         itemTouchHelper.attachToRecyclerView(mOrderRecycler);
+        mPriceRange.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Number minValue, Number maxValue) {
+                ((FavorFormActivity)getActivity()).getPriceRange()[0]=minValue.intValue();
+                ((FavorFormActivity)getActivity()).getPriceRange()[1]=maxValue.intValue();
+            }
+        });
         mItemName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}

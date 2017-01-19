@@ -96,22 +96,28 @@
         android:id="@+id/priceRange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/nextBtn"
         rsb:absoluteMaxValue="500"
         rsb:absoluteMinValue="0"
         rsb:alwaysActive="true"
         rsb:activateOnDefaultValues="true"
         rsb:showLabels="true"
-        rsb:textAboveThumbsColor="@android:color/darker_gray"
+        rsb:internalPadding="@dimen/activity_horizontal_margin"
+        rsb:step="10"
+        android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        rsb:textAboveThumbsColor="@android:color/darker_gray"
+        android:layout_marginBottom="23dp"
+        android:layout_above="@+id/nextBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
     <TextView
         android:id="@+id/priceRangeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:padding="10dp"
-        android:text="Estimated Total Cost: "
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Estimated Price Range: "
         android:layout_above="@id/priceRange" />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

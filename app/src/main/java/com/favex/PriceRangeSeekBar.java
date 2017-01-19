@@ -2,7 +2,6 @@ package com.favex;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 /**

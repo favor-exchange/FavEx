@@ -1,5 +1,7 @@
 package com.favex.Activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -41,11 +43,13 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     VerticalViewPager mVerticalQuestionViewPager;
     private Place favorLocation;
     private Place destination;
+    private String favorTitle;
     private String destinationDetails;
     private ArrayList<OrderItem> orderItems;
-    private float totalCost;
+    private int[] priceRange= new int[2];
     private float tip;
     private GoogleApiClient mGoogleApiClient;
+    private SharedPreferences prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
+        prefs = getSharedPreferences("com.favex", Context.MODE_PRIVATE);
     }
     public void setFavorLocation(Place place)
     {
@@ -75,19 +80,16 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     {
         orderItems= new ArrayList<>(listCopied);
     }
-    public void setTotalCost(float cost)
-    {
-        totalCost=cost;
-    }
     public void setTip(float t)
     {
         tip=t;
     }
-    public float getTotalCost(){return totalCost;}
+    public void setTitle(String value){favorTitle=value;}
     public VerticalViewPager getVerticalViewPager()
     {
         return mVerticalQuestionViewPager;
     }
+    public int[] getPriceRange() {return priceRange;}
     public Place getFavorLocation()
     {
         return favorLocation;
@@ -149,7 +151,6 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
         try
         {
             /*
-            //test object
             JSONObject favorJSON= new JSONObject();
             favorJSON.put("locationFavor",new JSONObject().put("lat",1).put("lng",1));
             favorJSON.put("locationRecipient",new JSONObject().put("lat",1).put("lng",1));
@@ -158,16 +159,19 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             favorJSON.put("details","b");
             favorJSON.put("priceRange",new JSONObject().put("min",1).put("max",2));
             favorJSON.put("tip",1);
-            //additional encapsulation due to nested structure - may need further revision
             JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);*/
+
             JSONObject favorJSON= new JSONObject();
             favorJSON.put("locationFavorId",favorLocation.getId());
             favorJSON.put("locationRecipientId",destination.getId());
             favorJSON.put("isComplete",false);
-            favorJSON.put("title","a");
-            favorJSON.put("details","b");
-            favorJSON.put("priceRange",new JSONObject().put("min",1).put("max",2));
-            favorJSON.put("tip",1);
+            favorJSON.put("title",favorTitle);
+            favorJSON.put("details",destinationDetails);
+            favorJSON.put("priceRange",new JSONObject().put("min",priceRange[0]).put("max",priceRange[1]));
+            favorJSON.put("recipientId",JSONObject.NULL);
+            favorJSON.put("doerId",prefs.getString("facebookId","default"));
+            favorJSON.put("tip",tip);
+
             JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);
 
             ApiClient.addFavor(favorMainJSON).enqueue(new Callback() {

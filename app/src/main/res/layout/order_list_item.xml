@@ -6,22 +6,15 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Item Name"
-        android:id="@+id/itemName" />
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:text="10"
         android:layout_weight="1"
-        android:id="@+id/quantity"
-        android:textAlignment="center"/>
+        android:id="@+id/quantity"/>
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="$100.00"
         android:layout_weight="1"
-        android:id="@+id/cost"
+        android:text="Item Name"
+        android:id="@+id/itemName"
         android:textAlignment="viewEnd"
-        android:gravity="end"/>
+        android:layout_gravity="end"/>
 </LinearLayout>
