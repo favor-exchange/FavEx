@@ -130,14 +130,14 @@ public class ChatService extends Service {
         super.onDestroy();
         Log.e("ChatService", "Stopping");
 
-        /*mSocket.disconnect();
+        mSocket.disconnect();
 
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("new message", onNewMessage);
-        mSocket.off("stored messages", onStoredMessages);*/
+        mSocket.off("stored messages", onStoredMessages);
     }
 
     private Emitter.Listener onConnect = new Emitter.Listener() {

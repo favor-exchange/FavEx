@@ -85,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.action_logout:
                 LoginManager.getInstance().logOut();
+                prefs.edit().putString("facebookId", "none").apply();
+                prefs.edit().putString("facebookAccessToken", "none").apply();
+                Intent mServiceIntent = new Intent(this, ChatService.class);
+                stopService(mServiceIntent);
                 startActivity(new Intent(this, login.class));
                 finish();
                 break;

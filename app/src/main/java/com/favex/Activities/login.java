@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -43,7 +44,6 @@ public class login extends AppCompatActivity {
             @Override
             public void onInitialized() {
                 if(isLoggedIn()){
-
                     startActivity(new Intent(login.this, MainActivity.class));
                     finish();
                 }
@@ -52,9 +52,9 @@ public class login extends AppCompatActivity {
         cbm = CallbackManager.Factory.create();
 
         setContentView(R.layout.activity_login);
-
-        info = (TextView) findViewById(R.id.login_info);
         loginButton = (LoginButton) findViewById(R.id.login_button);
+
+        getSupportActionBar().hide();
 
 
 
@@ -81,6 +81,7 @@ public class login extends AppCompatActivity {
         });
 
         //END DELET
+
 
 
 
@@ -116,6 +117,13 @@ public class login extends AppCompatActivity {
                 info.setText("Login attempt failed.");
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
 
     }
 

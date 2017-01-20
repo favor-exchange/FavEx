@@ -81,8 +81,6 @@ public class ChatFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        Log.e("onResume", "called");
-
         mNotificationManager.cancelAll();
 
         mReceiver = new Receiver();
