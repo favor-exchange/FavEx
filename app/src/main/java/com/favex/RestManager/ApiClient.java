@@ -13,8 +13,8 @@ import okhttp3.RequestBody;
  */
 
 public class ApiClient {
-    private static String baseUrl="54.201.173.243"; //testing on local machine but request was successful on aws too
-    private static int port= 80;
+    private static String baseUrl="192.168.1.101"; //testing on local machine but request was successful on aws too
+    private static int port= 3000;
     private static String addFavorEndpoint= "addFavor";
     private static String addUserEndpoint = "addUser";
     private static String getUserEndpoint = "getUser";
@@ -28,7 +28,6 @@ public class ApiClient {
     private static String updateRatingEndpoint = "updateRating";
     private static String deleteFavorEndpoint = "deleteFavor";
     private static String deleteUserEndpoint = "deleteUser";
-
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
 
@@ -109,7 +108,6 @@ public class ApiClient {
                 .addQueryParameter("id", id)
                 .build();
         Request request= new Request.Builder()
-                .get()
                 .url(httpUrl)
                 .build();
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
@@ -122,11 +120,10 @@ public class ApiClient {
                 .host(baseUrl)
                 .port(port)
                 .addPathSegment(getNearbyFavorsEndpoint)
-                .addQueryParameter("userLocationId", userLocationId)
-                .addQueryParameter("distance", distance)
+                .addQueryParameter("userLocationId",userLocationId)
+                .addQueryParameter("distance",distance)
                 .build();
         Request request= new Request.Builder()
-                .get()
                 .url(httpUrl)
                 .build();
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
@@ -194,7 +191,7 @@ public class ApiClient {
                 .build();
         RequestBody body= RequestBody.create(JSON,jsonObject.toString());
         Request request= new Request.Builder()
-                .post(body)
+                .put(body)
                 .url(httpUrl)
                 .build();
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
@@ -211,7 +208,7 @@ public class ApiClient {
                 .build();
         RequestBody body= RequestBody.create(JSON,jsonObject.toString());
         Request request= new Request.Builder()
-                .post(body)
+                .put(body)
                 .url(httpUrl)
                 .build();
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
@@ -228,7 +225,7 @@ public class ApiClient {
                 .build();
         RequestBody body= RequestBody.create(JSON,jsonObject.toString());
         Request request= new Request.Builder()
-                .post(body)
+                .delete(body)
                 .url(httpUrl)
                 .build();
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
@@ -245,10 +242,9 @@ public class ApiClient {
                 .build();
         RequestBody body= RequestBody.create(JSON,jsonObject.toString());
         Request request= new Request.Builder()
-                .post(body)
+                .delete(body)
                 .url(httpUrl)
                 .build();
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
     }
-
 }

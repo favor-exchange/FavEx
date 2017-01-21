@@ -123,13 +123,13 @@ public class EnterDestinationFragment extends Fragment implements currentLocatio
                             possibleLocationsBundle.putStringArray("locationNames",locationNames);
                             final FragmentManager fm = getFragmentManager();
                             final LocationPicker dialogFragment = new LocationPicker ();
-                            EnterDestinationFragment fragmentInstance =
+                            /*EnterDestinationFragment fragmentInstance =
                                     (EnterDestinationFragment) getFragmentManager().findFragmentByTag("android:switcher:" +
                                             R.id.verticalQuestionViewPager + ":" + ((FavorFormActivity)getActivity()).
                                             getVerticalViewPager().getCurrentItem());
                             //Method needs revision as it depends upon implementation in android library
-                            //Method would not work if updates were to occur
-                            dialogFragment.setTargetFragment(fragmentInstance,0);
+                            //Method would not work if updates were to occur*/
+                            dialogFragment.setTargetFragment(EnterDestinationFragment.this/*fragmentInstance*/,0);
                             dialogFragment.setArguments(possibleLocationsBundle);
                             dialogFragment.show(fm, "Dialog Fragment");
                             likelyPlaces.release();
@@ -158,16 +158,16 @@ public class EnterDestinationFragment extends Fragment implements currentLocatio
                             String[] locationNames= new String[likelyPlaces.getCount()];
                             for (int i=0;i<locationNames.length;i++) {
                                 locationNames[i]=likelyPlaces.get(i).getPlace().getName().toString();
-                                possibleLocationsArray[i]=likelyPlaces.get(i).getPlace();
+                                possibleLocationsArray[i]=likelyPlaces.get(i).getPlace().freeze();;
                             }
                             possibleLocationsBundle.putStringArray("locationNames",locationNames);
                             final FragmentManager fm = getFragmentManager();
                             final LocationPicker dialogFragment = new LocationPicker ();
-                            EnterDestinationFragment fragmentInstance =
+                            /*EnterDestinationFragment fragmentInstance =
                                     (EnterDestinationFragment) getFragmentManager().findFragmentByTag("android:switcher:" +
                                             R.id.verticalQuestionViewPager + ":" + ((FavorFormActivity)getActivity()).
-                                            getVerticalViewPager().getCurrentItem());
-                            dialogFragment.setTargetFragment(fragmentInstance,0);
+                                            getVerticalViewPager().getCurrentItem());*/
+                            dialogFragment.setTargetFragment(EnterDestinationFragment.this/*fragmentInstance*/,0);
                             dialogFragment.setArguments(possibleLocationsBundle);
                             dialogFragment.show(fm, "Dialog Fragment");
                             likelyPlaces.release();

@@ -1,6 +1,7 @@
 package com.favex.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -150,17 +151,6 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
 
         try
         {
-            /*
-            JSONObject favorJSON= new JSONObject();
-            favorJSON.put("locationFavor",new JSONObject().put("lat",1).put("lng",1));
-            favorJSON.put("locationRecipient",new JSONObject().put("lat",1).put("lng",1));
-            favorJSON.put("isComplete",false);
-            favorJSON.put("title","a");
-            favorJSON.put("details","b");
-            favorJSON.put("priceRange",new JSONObject().put("min",1).put("max",2));
-            favorJSON.put("tip",1);
-            JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);*/
-
             JSONObject favorJSON= new JSONObject();
             favorJSON.put("locationFavorId",favorLocation.getId());
             favorJSON.put("locationRecipientId",destination.getId());
@@ -168,8 +158,8 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             favorJSON.put("title",favorTitle);
             favorJSON.put("details",destinationDetails);
             favorJSON.put("priceRange",new JSONObject().put("min",priceRange[0]).put("max",priceRange[1]));
-            favorJSON.put("recipientId",JSONObject.NULL);
-            favorJSON.put("doerId",prefs.getString("facebookId","default"));
+            favorJSON.put("recipientId",prefs.getString("facebookId","default"));
+            favorJSON.put("doerId",JSONObject.NULL);
             favorJSON.put("tip",tip);
 
             JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);

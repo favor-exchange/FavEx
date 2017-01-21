@@ -11,10 +11,11 @@
     <application
         android:name=".Applications.ChatApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_favexlauncher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--favexlauncher was not in resource directory-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GoogleMapsKey" />
