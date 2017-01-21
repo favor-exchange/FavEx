@@ -97,6 +97,7 @@ public class login extends AppCompatActivity {
                         "com.favex", Context.MODE_PRIVATE);
 
                 prefs.edit().putString("facebookId", loginResult.getAccessToken().getUserId()).apply();
+                Log.e("fbid", loginResult.getAccessToken().getUserId());
                 prefs.edit().putString("facebookAccessToken", loginResult.getAccessToken().getToken()).apply();
 
                 Intent mServiceIntent = new Intent(login.this, ChatService.class);
