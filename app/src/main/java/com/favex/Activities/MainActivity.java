@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.favex.R;
 import com.favex.Adapters.TabFragmentPagerAdapter;
@@ -84,13 +85,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_logout:
-                LoginManager.getInstance().logOut();
-                prefs.edit().putString("facebookId", "none").apply();
-                prefs.edit().putString("facebookAccessToken", "none").apply();
-                Intent mServiceIntent = new Intent(this, ChatService.class);
-                stopService(mServiceIntent);
-                startActivity(new Intent(this, login.class));
-                finish();
+
+                FacebookSdk.sdkInitialize(getApplicationContext(), new FacebookSdk.InitializeCallback() {
+                    @Override
+                    public void onInitialized() {
+                        LoginManager.getInstance().logOut();
+                        prefs.edit().putString("facebookId", "none").apply();
+                        prefs.edit().putString("facebookAccessToken", "none").apply();
+                        Intent mServiceIntent = new Intent(MainActivity.this, ChatService.class);
+                        stopService(mServiceIntent);
+                        startActivity(new Intent(MainActivity.this, login.class));
+                        finish();
+                    }
+                });
                 break;
             case R.id.action_settings:
         }
