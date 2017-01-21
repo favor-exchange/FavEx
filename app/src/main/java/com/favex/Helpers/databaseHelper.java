@@ -2,6 +2,7 @@ package com.favex.Helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -14,6 +15,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME_USERS = "users";
     private static final String TABLE_NAME_MESSAGES = "messages";
+    private static final String COLUMN_NAME_OWNER = "OWNER";
     private static final String COLUMN_NAME_ID = "ID";
     private static final String COLUMN_NAME_SENDER = "SENDER";
     private static final String COLUMN_NAME_FBID = "FACEBOOKID";
@@ -35,7 +37,8 @@ public class databaseHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_SENDER + TEXT_TYPE + COMMA_SEP +
                     COLUMN_NAME_FBID + TEXT_TYPE +  COMMA_SEP +
                     COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
-                    COLUMN_NAME_READ + INTEGER_TYPE + " )";
+                    COLUMN_NAME_READ + INTEGER_TYPE + COMMA_SEP +
+                    COLUMN_NAME_OWNER + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_MESSAGES =
             "CREATE TABLE " + TABLE_NAME_MESSAGES + " (" +
@@ -44,7 +47,8 @@ public class databaseHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
                     COLUMN_NAME_MESSAGE + TEXT_TYPE + COMMA_SEP +
                     COLUMN_NAME_SENDER + TEXT_TYPE + COMMA_SEP +
-                    COLUMN_NAME_FBID + TEXT_TYPE + " )";
+                    COLUMN_NAME_FBID + TEXT_TYPE + COMMA_SEP +
+                    COLUMN_NAME_OWNER + TEXT_TYPE + " )";
 
 
     private static final String SQL_DELETE_USERS =
@@ -61,6 +65,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         db.execSQL(SQL_CREATE_USERS);
         db.execSQL(SQL_CREATE_MESSAGES);
     }
@@ -72,7 +77,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertUser(String sender, String facebookId, String date){
+    public boolean insertUser(String sender, String facebookId, String date, String myFacebookId){
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_NAME_USERS, "FACEBOOKID = " + "\"" + facebookId + "\"", null);
@@ -82,6 +87,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_NAME_FBID, facebookId);
         cv.put(COLUMN_NAME_DATE, date);
         cv.put(COLUMN_NAME_READ, 0);
+        cv.put(COLUMN_NAME_OWNER, myFacebookId);
 
         if( db.insert(TABLE_NAME_USERS, null, cv) == -1){
             return false;
@@ -98,7 +104,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_USERS, cv, "FACEBOOKID = " + "\"" + facebookId + "\"", null);
     }
 
-    public boolean insertMessage(String message, String sender, String facebookId, String time, String date){
+    public boolean insertMessage(String message, String sender, String facebookId, String time, String date, String myFacebookId){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -107,6 +113,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_NAME_FBID, facebookId);
         cv.put(COLUMN_NAME_TIME, time);
         cv.put(COLUMN_NAME_DATE, date);
+        cv.put(COLUMN_NAME_OWNER, myFacebookId);
 
         if( db.insert(TABLE_NAME_MESSAGES, null, cv) == -1){
             return false;
@@ -114,15 +121,15 @@ public class databaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getAllChats(){
+    public Cursor getAllChats(String myFacebookId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        return db.rawQuery("select * from " + TABLE_NAME_USERS, null);
+        return db.rawQuery("select * from " + TABLE_NAME_USERS + " WHERE " + COLUMN_NAME_OWNER + " = \"" + myFacebookId + "\"", null);
     }
 
-    public Cursor getMessagesByFacebookId(String facebookId){
+    public Cursor getMessagesByFacebookId(String facebookId, String myFacebookId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME_MESSAGES + " WHERE " + COLUMN_NAME_FBID + " = \"" + facebookId + "\"", null);
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME_MESSAGES + " WHERE " + COLUMN_NAME_FBID + " = \"" + facebookId + "\"" + " AND " + COLUMN_NAME_OWNER + " = \"" + myFacebookId + "\"", null);
     }
 }

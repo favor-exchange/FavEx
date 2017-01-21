@@ -82,7 +82,7 @@ public class MessagesActivity extends AppCompatActivity{
         llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
 
-        messages = dbh.getMessagesByFacebookId(senderFacebookId);
+        messages = dbh.getMessagesByFacebookId(senderFacebookId, myFacebookId);
         mAdapter = new MessagesRecyclerAdapter(messages, myFacebookId);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
@@ -128,8 +128,8 @@ public class MessagesActivity extends AppCompatActivity{
                 mSocket.emit("new message", mJSON);
 
                 //sender in local db should be my fb id to display messages correctly
-                dbh.insertMessage(message, myFacebookId, senderFacebookId, time, date);
-                messages = dbh.getMessagesByFacebookId(senderFacebookId);
+                dbh.insertMessage(message, myFacebookId, senderFacebookId, time, date, myFacebookId);
+                messages = dbh.getMessagesByFacebookId(senderFacebookId, myFacebookId);
 
                 mAdapter = new MessagesRecyclerAdapter(messages, myFacebookId);
 
@@ -150,7 +150,7 @@ public class MessagesActivity extends AppCompatActivity{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            messages = dbh.getMessagesByFacebookId(senderFacebookId);
+            messages = dbh.getMessagesByFacebookId(senderFacebookId, myFacebookId);
 
             mAdapter = new MessagesRecyclerAdapter(messages, myFacebookId);
 

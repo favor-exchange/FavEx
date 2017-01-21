@@ -3,10 +3,13 @@ package com.favex.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,10 +18,15 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.favex.R;
 import com.favex.Services.ChatService;
+
+import org.json.JSONObject;
 
 public class login extends AppCompatActivity {
 
@@ -36,14 +44,6 @@ public class login extends AppCompatActivity {
             @Override
             public void onInitialized() {
                 if(isLoggedIn()){
-
-                    /*SharedPreferences prefs = login.this.getSharedPreferences(
-                            "com.favex", Context.MODE_PRIVATE);
-
-                    Intent mServiceIntent = new Intent(login.this, ChatService.class);
-                    mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
-                    startService(mServiceIntent);*/
-
                     startActivity(new Intent(login.this, MainActivity.class));
                     finish();
                 }
@@ -52,9 +52,9 @@ public class login extends AppCompatActivity {
         cbm = CallbackManager.Factory.create();
 
         setContentView(R.layout.activity_login);
-
-        info = (TextView) findViewById(R.id.login_info);
         loginButton = (LoginButton) findViewById(R.id.login_button);
+
+        getSupportActionBar().hide();
 
 
 
@@ -81,6 +81,7 @@ public class login extends AppCompatActivity {
         });
 
         //END DELET
+
 
 
 
@@ -116,6 +117,13 @@ public class login extends AppCompatActivity {
                 info.setText("Login attempt failed.");
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
 
     }
 

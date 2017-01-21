@@ -130,14 +130,14 @@ public class ChatService extends Service {
         super.onDestroy();
         Log.e("ChatService", "Stopping");
 
-        /*mSocket.disconnect();
+        mSocket.disconnect();
 
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("new message", onNewMessage);
-        mSocket.off("stored messages", onStoredMessages);*/
+        mSocket.off("stored messages", onStoredMessages);
     }
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
@@ -180,8 +180,8 @@ public class ChatService extends Service {
                 String time = data.getString("time");
                 String date = data.getString("date");
 
-                dbh.insertMessage(message, sender, facebookIdReceived, time, date);
-                dbh.insertUser(sender, facebookIdReceived, date);
+                dbh.insertMessage(message, sender, facebookIdReceived, time, date, myFacebookId);
+                dbh.insertUser(sender, facebookIdReceived, date, myFacebookId);
 
                 Intent in = new Intent();
                 in.setAction("com.favex.NEW_MESSAGE");
@@ -215,8 +215,8 @@ public class ChatService extends Service {
                         String time = data.getJSONObject(i).getString("time");
                         String date = data.getJSONObject(i).getString("date");
 
-                        dbh.insertMessage(message, sender, facebookIdReceived, time, date);
-                        dbh.insertUser(sender, facebookIdReceived, date);
+                        dbh.insertMessage(message, sender, facebookIdReceived, time, date, myFacebookId);
+                        dbh.insertUser(sender, facebookIdReceived, date, myFacebookId);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
