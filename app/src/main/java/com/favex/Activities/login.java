@@ -113,7 +113,7 @@ public class login extends AppCompatActivity {
                             public void onCompleted(JSONObject object,GraphResponse response) {
                                 try {
                                     String  name=object.getString("name");
-                                    prefs.edit().putString("facebookId", name).apply();
+                                    prefs.edit().putString("name", name).apply();
 
                                     Log.d("user name ", name);
                                 } catch (JSONException e) {
