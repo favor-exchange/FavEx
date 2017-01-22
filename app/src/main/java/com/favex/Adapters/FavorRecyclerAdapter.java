@@ -75,9 +75,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         JSONObject favor= favorList.get(position);
         try
         {
-            new getFavorLocationPhoto(viewHolder.mLocationImage.getMeasuredWidth(),
-                    viewHolder.mLocationImage.getMeasuredHeight(),
-                    viewHolder.mLocationImage, viewHolder.mAttribution)
+            new getFavorLocationPhoto(40, 60, viewHolder.mLocationImage, viewHolder.mAttribution)
                     .execute(favor.getString("locationFavorId"));
             viewHolder.mMinPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("min")));
             viewHolder.mMaxPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("max")));
