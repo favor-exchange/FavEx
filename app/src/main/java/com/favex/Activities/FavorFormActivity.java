@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,7 +49,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     private String destinationDetails;
     private ArrayList<OrderItem> orderItems;
     private int[] priceRange= new int[2];
-    private float tip;
+    private double tip;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
     @Override
@@ -81,7 +82,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     {
         orderItems= new ArrayList<>(listCopied);
     }
-    public void setTip(float t)
+    public void setTip(double t)
     {
         tip=t;
     }
@@ -142,7 +143,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this,"FATAL ERROR: GOOGLE PLAY SERVICES CONNECTION FAILED!",Toast.LENGTH_SHORT);
+        Toast.makeText(this,"FATAL ERROR: GOOGLE PLAY SERVICES CONNECTION FAILED!",Toast.LENGTH_SHORT).show();
         //TODO: Provide more sophisticated implementation before submission
     }
 
@@ -154,9 +155,12 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             JSONObject favorJSON= new JSONObject();
             favorJSON.put("locationFavorId",favorLocation.getId());
             favorJSON.put("locationRecipientId",destination.getId());
+            favorJSON.put("locationFavorAddress",favorLocation.getAddress());
+            favorJSON.put("locationRecipientAddress",destination.getAddress());
             favorJSON.put("isComplete",false);
             favorJSON.put("title",favorTitle);
             favorJSON.put("details",destinationDetails);
+            favorJSON.put("orderItems",OrderItem.orderItemsListToJsonArray(orderItems));
             favorJSON.put("priceRange",new JSONObject().put("min",priceRange[0]).put("max",priceRange[1]));
             favorJSON.put("recipientId",prefs.getString("facebookId","default"));
             favorJSON.put("doerId",JSONObject.NULL);

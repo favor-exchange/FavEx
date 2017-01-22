@@ -66,7 +66,7 @@ public class EnterTipFragment extends Fragment {
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((FavorFormActivity)getActivity()).setTip(Float.parseFloat(mTip.getText().toString().trim()));
+                ((FavorFormActivity)getActivity()).setTip(Double.parseDouble(mTip.getText().toString().trim()));
                 ((FavorFormActivity)getActivity()).getVerticalViewPager().setCurrentItem(4);
             }
         });

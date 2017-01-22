@@ -8,23 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Tavish on 22-Jan-17.
  */
 
 public class GalleryAdapter extends PagerAdapter{
-    private int[] images; //change to bitmap
+    private ArrayList<Bitmap> bitmaps;
     private LayoutInflater inflater;
     private Context context;
-    public GalleryAdapter(Context context,int[] images) {
+    public GalleryAdapter(Context context, ArrayList<Bitmap> bitmaps) {
         this.context = context;
-        this.images=images;
+        this.bitmaps=bitmaps;
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return images.length;
+        return bitmaps.size();
     }
 
     @Override
@@ -35,7 +37,7 @@ public class GalleryAdapter extends PagerAdapter{
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView iv=new ImageView(context);
         iv.setLayoutParams(container.getLayoutParams());
-        iv.setImageResource(images[position]); //change to set bitmap
+        iv.setImageBitmap(bitmaps.get(position));
         container.addView(iv);
         return iv;
     }

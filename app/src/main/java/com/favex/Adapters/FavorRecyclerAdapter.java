@@ -76,7 +76,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         JSONObject favor= favorList.get(position);
         try
         {
-            new getFavorLocationPhoto(40, 60, viewHolder.mLocationImage, viewHolder.mAttribution)
+            new getFavorLocationPhoto(viewHolder.mLocationImage, viewHolder.mAttribution)
                     .execute(favor.getString("locationFavorId"));
             viewHolder.mMinPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("min")));
             viewHolder.mMaxPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("max")));
@@ -127,15 +127,11 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         }
     }
     private class getFavorLocationPhoto extends AsyncTask<String,Void,getFavorLocationPhoto.AttributedPhoto> {
-        private int mHeight;
-        private int mWidth;
         private ImageView mImageView;
         private TextView mTextView;
         AttributedPhoto attributedPhoto = null;
 
-        public getFavorLocationPhoto(int width, int height, ImageView imageView, TextView attrsText) {
-            mHeight = height;
-            mWidth = width;
+        public getFavorLocationPhoto(ImageView imageView, TextView attrsText) {
             mImageView= imageView;
             mTextView= attrsText;
         }
@@ -154,7 +150,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
                     PlacePhotoMetadata photo = photoMetadataBuffer.get(0);
                     CharSequence attribution = photo.getAttributions();
                     // Load a scaled bitmap for this photo.
-                    Bitmap image = photo.getScaledPhoto(mGoogleApiClient, mWidth, mHeight).await().getBitmap();
+                    Bitmap image = photo.getPhoto(mGoogleApiClient).await().getBitmap();
                     attributedPhoto = new AttributedPhoto(attribution, image);
                 }
                 photoMetadataBuffer.release();
