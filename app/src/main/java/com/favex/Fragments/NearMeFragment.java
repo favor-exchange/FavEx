@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,10 +48,13 @@ public class NearMeFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.near_me_fragment, container, false);
+
         mFavorRecycler = (RecyclerView) view.findViewById(R.id.favorRecycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mFavorRecycler.setLayoutManager(linearLayoutManager);
         mGoogleApiClient = ((MainActivity) getActivity()).getGoogleApiClient();
+
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
