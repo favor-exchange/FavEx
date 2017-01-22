@@ -28,11 +28,10 @@
         <activity android:name=".Activities.FavorFormActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".Activities.MessagesActivity" />
-
+        <activity android:name=".Activities.FavorDetails"/>
         <activity android:name=".Activities.login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

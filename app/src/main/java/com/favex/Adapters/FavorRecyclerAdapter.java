@@ -1,6 +1,7 @@
 package com.favex.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +22,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import com.favex.Activities.FavorDetails;
 import com.favex.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -72,7 +75,9 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         JSONObject favor= favorList.get(position);
         try
         {
-            new getFavorLocationPhoto(40, 40, viewHolder.mLocationImage, viewHolder.mAttribution)
+            new getFavorLocationPhoto(viewHolder.mLocationImage.getMeasuredWidth(),
+                    viewHolder.mLocationImage.getMeasuredHeight(),
+                    viewHolder.mLocationImage, viewHolder.mAttribution)
                     .execute(favor.getString("locationFavorId"));
             viewHolder.mMinPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("min")));
             viewHolder.mMaxPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("max")));
@@ -112,6 +117,14 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
             mTitle= (TextView)itemView.findViewById(R.id.title);
             mDistance= (TextView)itemView.findViewById(R.id.distance);
             mAttribution= (TextView)itemView.findViewById(R.id.attribution);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i= new Intent(view.getContext(), FavorDetails.class);
+                    i.putExtra("favorJsonString", favorList.get(getAdapterPosition()).toString());
+                    view.getContext().startActivity(i);
+                }
+            });
         }
     }
     private class getFavorLocationPhoto extends AsyncTask<String,Void,getFavorLocationPhoto.AttributedPhoto> {
@@ -142,7 +155,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
                     PlacePhotoMetadata photo = photoMetadataBuffer.get(0);
                     CharSequence attribution = photo.getAttributions();
                     // Load a scaled bitmap for this photo.
-                    Bitmap image = photo.getPhoto(mGoogleApiClient/*, mWidth, mHeight*/).await().getBitmap();
+                    Bitmap image = photo.getScaledPhoto(mGoogleApiClient, mWidth, mHeight).await().getBitmap();
                     attributedPhoto = new AttributedPhoto(attribution, image);
                 }
                 photoMetadataBuffer.release();
@@ -156,7 +169,6 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
             if(attributedPhoto!=null)
             {
                 mImageView.setImageBitmap(result.bitmap);
-                mTextView.setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT >= 24)
                     mTextView.setText(Html.fromHtml(result.attribution.toString(),FROM_HTML_MODE_LEGACY));
                 else

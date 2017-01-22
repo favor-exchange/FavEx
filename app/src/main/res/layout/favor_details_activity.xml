@@ -1,18 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
     android:orientation="vertical"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_weight="0.5">
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textSize="16sp"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textColor="@android:color/white"
+            android:text="Image Location"
+            android:background="#80000000"/>
+    </FrameLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5">
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"
+            android:text="Title"
+            android:id="@+id/title"/>
+        <TextView
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/title"
+            android:layout_marginTop="8dp"
+            android:text="Distance"
+            android:id="@+id/distance"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/details"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Tip"
+            android:id="@+id/tip"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="minPrice"
+            android:id="@+id/minPrice"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="maxPrice"
+            android:id="@+id/maxPrice"/>
     </RelativeLayout>
-
 </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chatBtn"
+        app:fabSize="normal"
+        app:layout_anchor="@id/viewPager"
+        app:layout_anchorGravity="bottom|right|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_comment_white_24dp"
+        android:layout_margin="@dimen/activity_horizontal_margin"/>
+</android.support.design.widget.CoordinatorLayout>

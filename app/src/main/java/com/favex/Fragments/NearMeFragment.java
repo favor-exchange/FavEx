@@ -3,6 +3,7 @@ package com.favex.Fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -64,7 +65,7 @@ public class NearMeFragment extends Fragment
             PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
             result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
-                public void onResult(PlaceLikelihoodBuffer likelyPlaces)
+                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces)
                 {
                     PlaceLikelihood mostLikelyLocation= likelyPlaces.get(0);
                     for (int i=1;i<likelyPlaces.getCount();i++) {
