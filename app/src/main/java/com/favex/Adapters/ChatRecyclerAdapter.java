@@ -25,6 +25,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
@@ -62,7 +65,24 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
             viewHolder.mName.setTypeface(null, Typeface.BOLD);
         }
 
-        viewHolder.mDate.setText(users.getString(3));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date strDate = null;
+        try {
+            strDate = sdf.parse(users.getString(3));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        /*if ((new Date()).after(strDate)) {
+            Log.e("date", "after");
+            viewHolder.mDate_Time.setText(users.getString(3));
+        }
+        else{
+            viewHolder.mDate_Time.setText(users.getString(6));
+        }*/
+
+        viewHolder.mDate_Time.setText(users.getString(3));
+
         viewHolder.mFacebookId = users.getString(2);
 
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory(),
@@ -97,7 +117,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     public class ChatViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mName;
-        private TextView mDate;
+        private TextView mDate_Time;
         private CircleImageView mProfilePicture;
         private String mFacebookId;
 
@@ -105,7 +125,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
 
             super(itemView);
             mName = (TextView) itemView.findViewById(R.id.name_textView);
-            mDate = (TextView) itemView.findViewById(R.id.date_textView);
+            mDate_Time = (TextView) itemView.findViewById(R.id.date_time_textView);
             mProfilePicture = (CircleImageView) itemView.findViewById(R.id.profile_image);
 
             itemView.setOnClickListener(new View.OnClickListener() {

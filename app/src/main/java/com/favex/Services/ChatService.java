@@ -181,7 +181,7 @@ public class ChatService extends Service {
                 String date = data.getString("date");
 
                 dbh.insertMessage(message, sender, facebookIdReceived, time, date, myFacebookId);
-                dbh.insertUser(sender, facebookIdReceived, date, myFacebookId);
+                dbh.insertUser(sender, facebookIdReceived, date, myFacebookId, time);
 
                 Intent in = new Intent();
                 in.setAction("com.favex.NEW_MESSAGE");
@@ -216,7 +216,7 @@ public class ChatService extends Service {
                         String date = data.getJSONObject(i).getString("date");
 
                         dbh.insertMessage(message, sender, facebookIdReceived, time, date, myFacebookId);
-                        dbh.insertUser(sender, facebookIdReceived, date, myFacebookId);
+                        dbh.insertUser(sender, facebookIdReceived, date, myFacebookId, time);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

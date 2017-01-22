@@ -38,7 +38,8 @@ public class databaseHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_FBID + TEXT_TYPE +  COMMA_SEP +
                     COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
                     COLUMN_NAME_READ + INTEGER_TYPE + COMMA_SEP +
-                    COLUMN_NAME_OWNER + TEXT_TYPE + " )";
+                    COLUMN_NAME_OWNER + TEXT_TYPE +  COMMA_SEP +
+                    COLUMN_NAME_TIME + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_MESSAGES =
             "CREATE TABLE " + TABLE_NAME_MESSAGES + " (" +
@@ -77,7 +78,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertUser(String sender, String facebookId, String date, String myFacebookId){
+    public boolean insertUser(String sender, String facebookId, String date, String myFacebookId, String time){
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_NAME_USERS, "FACEBOOKID = " + "\"" + facebookId + "\"", null);
@@ -88,6 +89,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_NAME_DATE, date);
         cv.put(COLUMN_NAME_READ, 0);
         cv.put(COLUMN_NAME_OWNER, myFacebookId);
+        cv.put(COLUMN_NAME_TIME, time);
 
         if( db.insert(TABLE_NAME_USERS, null, cv) == -1){
             return false;

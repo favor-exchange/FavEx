@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -30,7 +31,6 @@ import org.json.JSONObject;
 
 public class login extends AppCompatActivity {
 
-    private TextView info;
     private LoginButton loginButton;
     private CallbackManager cbm;
     private AccessToken accessToken;
@@ -60,6 +60,8 @@ public class login extends AppCompatActivity {
 
 
 
+
+
         //DELET THIS
         tmpSkip = (Button) findViewById(R.id.skip_login_tmp_button);
 
@@ -79,7 +81,6 @@ public class login extends AppCompatActivity {
 
             }
         });
-
         //END DELET
 
 
@@ -96,6 +97,7 @@ public class login extends AppCompatActivity {
                         "com.favex", Context.MODE_PRIVATE);
 
                 prefs.edit().putString("facebookId", loginResult.getAccessToken().getUserId()).apply();
+                Log.e("fbid", loginResult.getAccessToken().getUserId());
                 prefs.edit().putString("facebookAccessToken", loginResult.getAccessToken().getToken()).apply();
 
                 Intent mServiceIntent = new Intent(login.this, ChatService.class);
@@ -109,12 +111,12 @@ public class login extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                info.setText("Login attempt canceled.");
+                Toast.makeText(login.this, "Login attempt canceled.", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                info.setText("Login attempt failed.");
+                Toast.makeText(login.this, "Login attempt failed.", Toast.LENGTH_LONG).show();
             }
         });
 
