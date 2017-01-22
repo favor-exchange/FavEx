@@ -109,6 +109,7 @@ public class EnterDestinationFragment extends Fragment implements currentLocatio
                             MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 }
                 else{
+                    Log.i("Picking Destination","location permession was approved prior");
                     PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
                     result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                         @Override

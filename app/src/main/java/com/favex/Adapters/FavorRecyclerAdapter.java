@@ -55,6 +55,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         {
             for (int i = 0; i < jsonArray.length(); i++)
                 favorList.add(jsonArray.getJSONObject(i));
+            notifyItemRangeChanged(0,jsonArray.length());
         }
         catch (JSONException e)
         {
