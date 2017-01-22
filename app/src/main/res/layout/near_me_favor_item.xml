@@ -97,7 +97,9 @@
             <ImageView
                 android:contentDescription="@string/locationImageDescription"
                 android:id="@+id/locationImage"
-                android:layout_width="124dp"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:scaleType="centerCrop"
                 android:layout_height="match_parent"
                 android:src="@mipmap/ic_launcher" />
         </LinearLayout>

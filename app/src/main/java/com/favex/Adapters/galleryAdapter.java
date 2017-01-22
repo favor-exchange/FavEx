@@ -37,6 +37,7 @@ public class GalleryAdapter extends PagerAdapter{
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView iv=new ImageView(context);
         iv.setLayoutParams(container.getLayoutParams());
+        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
         iv.setImageBitmap(bitmaps.get(position));
         container.addView(iv);
         return iv;

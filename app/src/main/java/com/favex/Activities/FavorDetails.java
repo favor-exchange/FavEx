@@ -7,13 +7,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.favex.Adapters.FavorRecyclerAdapter;
 import com.favex.Adapters.GalleryAdapter;
+import com.favex.Adapters.OrderRecyclerAdapter;
 import com.favex.POJOs.OrderItem;
 import com.favex.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
@@ -41,10 +48,12 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
     private TextView mFavorTitle;
     private TextView mFavorAddress;
     private TextView mRecipientAddress;
+    private TextView mDistance;
     private TextView mMinPrice;
     private TextView mMaxPrice;
     private TextView mTip;
     private ViewPager mViewPager;
+    private TextView mImageLabel;
     private GalleryAdapter adapter;
     private ArrayList<Bitmap> bitmaps= new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
@@ -65,8 +74,11 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
         mFavorTitle= (TextView)findViewById(R.id.title);
         mFavorAddress= (TextView)findViewById(R.id.favorAddress);
         mRecipientAddress= (TextView)findViewById(R.id.recipientAddress);
+        mDistance= (TextView)findViewById(R.id.distance);
         mMinPrice= (TextView)findViewById(R.id.minPrice);
         mMaxPrice= (TextView)findViewById(R.id.maxPrice);
+        mImageLabel= (TextView)findViewById(R.id.imageLabel);
+        LinearLayout mOrderList= (LinearLayout)findViewById(R.id.orderList);
         mTip= (TextView)findViewById(R.id.tip);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mGoogleApiClient = new GoogleApiClient
@@ -80,22 +92,58 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
         String favorJsonString= getIntent().getStringExtra("favorJsonString");
         try
         {
-            JSONObject favorJson = new JSONObject(favorJsonString);
+            final JSONObject favorJson = new JSONObject(favorJsonString);
             mFavorTitle.setText(favorJson.getString("title"));
+            mDistance.setText(String.valueOf(favorJson.getInt("distance"))+" m");
             mFavorAddress.setText(favorJson.getString("locationFavorAddress"));
             mRecipientAddress.setText(favorJson.getString("locationRecipientAddress"));
             mMinPrice.setText(String.valueOf(favorJson.getJSONObject("priceRange").getInt("min")));
             mMaxPrice.setText(String.valueOf(favorJson.getJSONObject("priceRange").getInt("max")));
             mTip.setText(String.valueOf(favorJson.getDouble("tip")));
-            placePhotosAsync(favorJson.getString("locationFavorId"),mViewPager);
-            placePhotosAsync(favorJson.getString("locationRecipientId"),mViewPager);
+            mImageLabel.setText(favorJson.getString("locationFavorName"));
+            placePhotosAsync(favorJson.getString("locationFavorId"));
+            placePhotosAsync(favorJson.getString("locationRecipientId"));
+            for (int i = 0; i < favorJson.getJSONArray("orderItems").length(); i++) {
+                View item = getLayoutInflater().inflate(R.layout.order_list_item,mOrderList,false);
+                TextView mItemName= (TextView) item.findViewById(R.id.itemName);
+                mItemName.setText(favorJson.getJSONArray("orderItems").getJSONObject(i).getString("itemName"));
+                TextView mQuantity= (TextView) item.findViewById(R.id.quantity);
+                mQuantity.setText(favorJson.getJSONArray("orderItems").getJSONObject(i).getString("quantity"));
+                mOrderList.addView(item);
+            }
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+                @Override
+                public void onPageSelected(int position) {
+                    try
+                    {
+                        switch (position)
+                        {
+                            case 0: mImageLabel.setText(favorJson.getString("locationFavorName"));
+                                    break;
+                            case 1: mImageLabel.setText(favorJson.getString("locationRecipientName"));
+                                    break;
+                            default: mImageLabel.setText("No place name available");
+                        }
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {}
+            });
         }
         catch (JSONException e)
         {
             e.printStackTrace();
         }
     }
-    private void placePhotosAsync(String placeId, final ViewPager viewPager) {
+    private void placePhotosAsync(String placeId) {
         Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
                 .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
                     @Override
@@ -107,8 +155,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                         if (photoMetadataBuffer.getCount() > 0) {
                             // Display the first bitmap in an ImageView in the size of the view
                             photoMetadataBuffer.get(0)
-                                    .getScaledPhoto(mGoogleApiClient, viewPager.getWidth(),
-                                            viewPager.getHeight())
+                                    .getPhoto(mGoogleApiClient)
                                     .setResultCallback(mDisplayPhotoResultCallback);
                         }
                         photoMetadataBuffer.release();
