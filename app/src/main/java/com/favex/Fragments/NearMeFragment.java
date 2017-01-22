@@ -100,7 +100,7 @@ public class NearMeFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(getActivity(), "json error", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "No favors available nearby", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -110,7 +110,7 @@ public class NearMeFragment extends Fragment {
 
                     }
                     else{
-                        Toast.makeText(getActivity(), "no nearby places found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "No nearby places found", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

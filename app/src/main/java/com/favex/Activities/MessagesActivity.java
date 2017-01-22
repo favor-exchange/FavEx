@@ -107,9 +107,9 @@ public class MessagesActivity extends AppCompatActivity{
                 int day = cal.get(Calendar.DAY_OF_MONTH);
                 int month = cal.get(Calendar.MONTH) + 1;
                 int year = cal.get(Calendar.YEAR);
-                String date = String.valueOf(day) + String.valueOf(month) + String.valueOf(year);
+                String date = String.valueOf(day)+ "/" + String.valueOf(month) + "/" + String.valueOf(year);
 
-                String sender = "Shayan Imran"; //change to useful value later
+                String sender = prefs.getString("user", "default"); //change to useful value later
 
                 JSONObject mJSON = new JSONObject();
 

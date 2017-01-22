@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.appevents.AppEventsConstants;
+import com.facebook.appevents.AppEventsLogger;
 import com.favex.Adapters.QuestionFragmentAdapter;
 import com.favex.RestManager.ApiClient;
 import com.favex.Interfaces.postFavorInterface;
@@ -51,6 +53,8 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     private float tip;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
+    private AppEventsLogger logger;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +179,8 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                logger = AppEventsLogger.newLogger(FavorFormActivity.this);
+                                logger.logEvent("newFavorAdded");
                                 Toast.makeText(FavorFormActivity.this,"Favor added successfully",Toast.LENGTH_SHORT).show();
                             }
                         });
