@@ -1,5 +1,7 @@
 package com.favex.RestManager;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 
 /**
@@ -10,7 +12,9 @@ public class OkHttpSingleton{
     private static OkHttpSingleton okHttpSingleton;
     private OkHttpClient okHttpClient;
     private OkHttpSingleton(){
-        okHttpClient= new OkHttpClient();
+        okHttpClient= new OkHttpClient.Builder()
+                .readTimeout(300, TimeUnit.SECONDS)
+                .build();
     }
     public static OkHttpSingleton getOkHttpInstance() {
         if(okHttpSingleton==null) {

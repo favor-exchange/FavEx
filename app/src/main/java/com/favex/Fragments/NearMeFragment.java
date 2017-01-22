@@ -53,8 +53,8 @@ public class NearMeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mFavorRecycler.setLayoutManager(linearLayoutManager);
         mGoogleApiClient = ((MainActivity) getActivity()).getGoogleApiClient();
-
-
+        mAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
+        mFavorRecycler.setAdapter(mAdapter);
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -85,32 +85,23 @@ public class NearMeFragment extends Fragment {
                             }
 
                             @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                mAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
-                                try {
-                                    mAdapter.setFavorList(new JSONArray(response.body().string()));
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mFavorRecycler.setAdapter(mAdapter);
+                            public void onResponse(Call call, final Response response) throws IOException {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            //if(!response.body().string().equals("false"))
+                                            mAdapter.setFavorList(new JSONArray(response.body().string()));
+                                        } catch (IOException | JSONException e) {
+                                            e.printStackTrace();
                                         }
-                                    });
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getActivity(), "No favors available nearby", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
+                                    }
+                                });
                             }
-
                         });
-
                     }
                     else{
-                        Toast.makeText(getActivity(), "No nearby places found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "no nearby places found", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
