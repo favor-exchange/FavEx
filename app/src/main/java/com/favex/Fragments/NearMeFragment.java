@@ -55,6 +55,7 @@ public class NearMeFragment extends Fragment {
         mGoogleApiClient = ((MainActivity) getActivity()).getGoogleApiClient();
         mAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
         mFavorRecycler.setAdapter(mAdapter);
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
