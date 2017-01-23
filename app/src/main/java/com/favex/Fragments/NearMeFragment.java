@@ -70,9 +70,11 @@ public class NearMeFragment extends Fragment {
                             if (likelyPlaces.get(i).getLikelihood() > mostLikelyLocation.getLikelihood()) //if other places have higher probability
                                 mostLikelyLocation = likelyPlaces.get(i);
                         }
-                        userLocationId = mostLikelyLocation.getPlace().getId();
+                        double userLat= mostLikelyLocation.getPlace().getLatLng().latitude;
+                        double userLng= mostLikelyLocation.getPlace().getLatLng().latitude;
                         likelyPlaces.release();
-                        ApiClient.getNearbyFavors(userLocationId, "500").enqueue(new Callback() {
+                        ApiClient.getNearbyFavors(String.valueOf(userLat),
+                                String.valueOf(userLng), "500").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();

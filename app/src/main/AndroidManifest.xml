@@ -46,6 +46,7 @@
         <service
             android:name=".Services.ChatService"
             android:description="@string/service_description"/>
+        <service android:name=".Services.LocationService"/>
     </application>
 
 </manifest>

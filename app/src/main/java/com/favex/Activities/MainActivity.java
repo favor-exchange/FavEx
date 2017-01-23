@@ -27,6 +27,7 @@ import com.facebook.login.LoginManager;
 import com.favex.R;
 import com.favex.Adapters.TabFragmentPagerAdapter;
 import com.favex.Services.ChatService;
+import com.favex.Services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -59,6 +60,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             Intent mServiceIntent = new Intent(this, ChatService.class);
             mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
+            startService(mServiceIntent);
+        }
+
+        if (!isMyServiceRunning(LocationService.class)) {
+            Intent mServiceIntent = new Intent(this, LocationService.class);
             startService(mServiceIntent);
         }
 
