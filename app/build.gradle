@@ -30,6 +30,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
     compile 'com.google.android.gms:play-services-places:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
     compile ('io.socket:socket.io-client:0.8.3') {
         exclude group: 'org.json', module: 'json'
     }
