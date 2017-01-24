@@ -3,11 +3,13 @@ package com.favex.Fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +58,13 @@ public class NearMeFragment extends Fragment {
         mAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
         mFavorRecycler.setAdapter(mAdapter);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        if(mGoogleApiClient == null){
+            Log.e("googleapiclient", "null");
+        }
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -65,7 +74,7 @@ public class NearMeFragment extends Fragment {
             result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                    if (likelyPlaces.getCount() != 0) {
+                    if (likelyPlaces.getCount() > 0) {
                         PlaceLikelihood mostLikelyLocation = likelyPlaces.get(0);
                         for (int i = 1; i < likelyPlaces.getCount(); i++) {
                             if (likelyPlaces.get(i).getLikelihood() > mostLikelyLocation.getLikelihood()) //if other places have higher probability
@@ -73,7 +82,7 @@ public class NearMeFragment extends Fragment {
                         }
                         userLocationId = mostLikelyLocation.getPlace().getId();
                         likelyPlaces.release();
-                        ApiClient.getNearbyFavors(userLocationId, "500").enqueue(new Callback() {
+                        ApiClient.getNearbyFavors(userLocationId, "1000").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();

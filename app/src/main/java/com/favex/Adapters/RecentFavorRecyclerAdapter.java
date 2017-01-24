@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -13,40 +12,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 
 import com.favex.Activities.FavorDetails;
 import com.favex.R;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
 
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 /**
- * Created by Tavish on 06-Jan-17.
+ * Created by Shayan on 23-Jan-17.
  */
 
-public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdapter.FavorViewHolder>
-{
+public class RecentFavorRecyclerAdapter extends RecyclerView.Adapter<RecentFavorRecyclerAdapter.RecentFavorViewHolder> {
     private ArrayList<JSONObject> favorList= new ArrayList<>();
     private LayoutInflater layoutInflater;
     private GoogleApiClient mGoogleApiClient;
-    public FavorRecyclerAdapter(Context context, GoogleApiClient googleApiClient)
-    {
-        mGoogleApiClient= googleApiClient;
+
+    public RecentFavorRecyclerAdapter(Context context, GoogleApiClient client){
+        mGoogleApiClient= client;
         layoutInflater= LayoutInflater.from(context);
     }
     public void setFavorList(JSONArray jsonArray)
@@ -64,25 +57,22 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
     }
 
     @Override
-    public FavorViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        View view=layoutInflater.inflate(R.layout.near_me_favor_item, parent, false);
-        return new FavorViewHolder(view);
+    public RecentFavorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view=layoutInflater.inflate(R.layout.recent_favor_item, parent, false);
+        return new RecentFavorViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final FavorViewHolder viewHolder, int position)
-    {
+    public void onBindViewHolder(RecentFavorRecyclerAdapter.RecentFavorViewHolder holder, int position) {
         JSONObject favor= favorList.get(position);
         try
         {
-            new getFavorLocationPhoto(viewHolder.mLocationImage, viewHolder.mAttribution)
+            new getFavorLocationPhoto(holder.mLocationImage, holder.mAttribution)
                     .execute(favor.getString("locationFavorId"));
-            viewHolder.mMinPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("min")));
-            viewHolder.mMaxPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("max")));
-            viewHolder.mTitle.setText(favor.getString("title"));
-            viewHolder.mDistance.setText(String.valueOf(favor.getInt("distance")));
-            viewHolder.mTip.setText(String.valueOf(favor.getInt("tip")));
+            holder.mMinPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("min")));
+            holder.mMaxPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("max")));
+            holder.mTitle.setText(favor.getString("title"));
+            holder.mTip.setText(String.valueOf(favor.getInt("tip")));
         }
         catch (JSONException e)
         {
@@ -94,31 +84,31 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
     {
         return position;
     }
+
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return favorList.size();
     }
 
-    public class FavorViewHolder extends RecyclerView.ViewHolder
-    {
+    public class RecentFavorViewHolder extends RecyclerView.ViewHolder {
+
         private ImageView mLocationImage;
         private TextView mMinPrice;
         private TextView mMaxPrice;
         private TextView mTitle;
-        private TextView mDistance;
         private TextView mAttribution;
         private TextView mTip;
-        public FavorViewHolder(final View itemView)
-        {
+
+        public RecentFavorViewHolder(View itemView) {
             super(itemView);
-            mLocationImage= (ImageView)itemView.findViewById(R.id.locationImage);
-            mMinPrice= (TextView)itemView.findViewById(R.id.minPrice);
-            mMaxPrice= (TextView)itemView.findViewById(R.id.maxPrice);
-            mTitle= (TextView)itemView.findViewById(R.id.title);
-            mDistance= (TextView)itemView.findViewById(R.id.distance);
-            mAttribution= (TextView)itemView.findViewById(R.id.attribution);
-            mTip = (TextView) itemView.findViewById(R.id.tip);
+
+            mLocationImage= (ImageView)itemView.findViewById(R.id.recent_locationImage);
+            mMinPrice= (TextView)itemView.findViewById(R.id.recent_minPrice);
+            mMaxPrice= (TextView)itemView.findViewById(R.id.recent_maxPrice);
+            mTitle= (TextView)itemView.findViewById(R.id.recent_title);
+            mAttribution= (TextView)itemView.findViewById(R.id.recent_attribution);
+            mTip = (TextView) itemView.findViewById(R.id.recent_tip);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -127,8 +117,10 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
                     view.getContext().startActivity(i);
                 }
             });
+
         }
     }
+
     private class getFavorLocationPhoto extends AsyncTask<String,Void,getFavorLocationPhoto.AttributedPhoto> {
         private ImageView mImageView;
         private TextView mTextView;

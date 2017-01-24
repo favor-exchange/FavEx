@@ -1,15 +1,20 @@
 package com.favex.Activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +25,7 @@ import android.widget.Toast;
 import com.favex.Adapters.FavorRecyclerAdapter;
 import com.favex.Adapters.GalleryAdapter;
 import com.favex.Adapters.OrderRecyclerAdapter;
+import com.favex.Helpers.databaseHelper;
 import com.favex.POJOs.OrderItem;
 import com.favex.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +40,9 @@ import com.google.android.gms.location.places.Places;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.zip.Inflater;
 
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
@@ -44,6 +52,7 @@ import static android.text.Html.FROM_HTML_MODE_LEGACY;
  */
 
 public class FavorDetails extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
     private ArrayList<OrderItem> orderItems;
     private TextView mFavorTitle;
     private TextView mFavorAddress;
@@ -57,6 +66,10 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
     private GalleryAdapter adapter;
     private ArrayList<Bitmap> bitmaps= new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
+    private FloatingActionButton mFAB;
+    SharedPreferences prefs;
+    databaseHelper dbh;
+
     private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback= new ResultCallback<PlacePhotoResult>() {
         @Override
         public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
@@ -81,20 +94,32 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
         LinearLayout mOrderList= (LinearLayout)findViewById(R.id.orderList);
         mTip= (TextView)findViewById(R.id.tip);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mFAB = (FloatingActionButton) findViewById(R.id.chatBtn);
+        prefs = getSharedPreferences("com.favex", Context.MODE_PRIVATE);
+        dbh = new databaseHelper(this);
+
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
+
         adapter = new GalleryAdapter(this, bitmaps);
+
         mViewPager.setAdapter(adapter);
-        String favorJsonString= getIntent().getStringExtra("favorJsonString");
+        final String favorJsonString= getIntent().getStringExtra("favorJsonString");
         try
         {
             final JSONObject favorJson = new JSONObject(favorJsonString);
             mFavorTitle.setText(favorJson.getString("title"));
-            mDistance.setText(String.valueOf(favorJson.getInt("distance"))+" m");
+            if(favorJson.has("distance")) {
+                mDistance.setText(favorJson.getString("distance") + " m");
+            }
+            else{
+                mDistance.setVisibility(View.INVISIBLE);
+                findViewById(R.id.distanceLabel).setVisibility(View.INVISIBLE);
+            }
             mFavorAddress.setText(favorJson.getString("locationFavorAddress"));
             mRecipientAddress.setText(favorJson.getString("locationRecipientAddress"));
             mMinPrice.setText(String.valueOf(favorJson.getJSONObject("priceRange").getInt("min")));
@@ -103,6 +128,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
             mImageLabel.setText(favorJson.getString("locationFavorName"));
             placePhotosAsync(favorJson.getString("locationFavorId"));
             placePhotosAsync(favorJson.getString("locationRecipientId"));
+
             for (int i = 0; i < favorJson.getJSONArray("orderItems").length(); i++) {
                 View item = getLayoutInflater().inflate(R.layout.order_list_item,mOrderList,false);
                 TextView mItemName= (TextView) item.findViewById(R.id.itemName);
@@ -111,6 +137,36 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                 mQuantity.setText(favorJson.getJSONArray("orderItems").getJSONObject(i).getString("quantity"));
                 mOrderList.addView(item);
             }
+            final String myFacebookId =  prefs.getString("facebookId", "default");
+
+            if(myFacebookId.compareTo(favorJson.getString("recipientId")) == 0){
+                mFAB.setVisibility(View.INVISIBLE);
+            }
+            else {
+                mFAB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(FavorDetails.this, MessagesActivity.class);
+                        Calendar cal = Calendar.getInstance();
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                        String time = sdf.format(cal.getTime());
+
+                        int day = cal.get(Calendar.DAY_OF_MONTH);
+                        int month = cal.get(Calendar.MONTH) + 1;
+                        int year = cal.get(Calendar.YEAR);
+                        String date = String.valueOf(day)+ "/" + String.valueOf(month) + "/" + String.valueOf(year);
+                        try {
+                            in.putExtra("facebookId", favorJson.getString("recipientId"));
+                            in.putExtra("sender", "Favor Recipient");
+                            dbh.insertUser(dbh.getUserName(myFacebookId, favorJson.getString("recipientId")), favorJson.getString("recipientId"), date, prefs.getString("facebookId", "default"),time);
+                            startActivity(in);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+
             mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}

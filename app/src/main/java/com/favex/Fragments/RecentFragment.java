@@ -3,16 +3,18 @@ package com.favex.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.favex.Activities.MainActivity;
-import com.favex.Adapters.FavorRecyclerAdapter;
+import com.favex.Adapters.RecentFavorRecyclerAdapter;
 import com.favex.R;
 import com.favex.RestManager.ApiClient;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,14 +36,16 @@ public class RecentFragment extends Fragment
 {
     private RecyclerView mFavorsRequestedRecycler;
     private RecyclerView mFavorsDoneRecycler;
-    protected FavorRecyclerAdapter mRequestedAdapter;
-    protected FavorRecyclerAdapter mDoneAdapter;
+    protected RecentFavorRecyclerAdapter mRequestedAdapter;
+    protected RecentFavorRecyclerAdapter mDoneAdapter;
     private GoogleApiClient mGoogleApiClient;
+    private TextView label_requested;
+    private TextView label_done;
     SharedPreferences prefs;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.recent_fragment, container, false);
+        final View view = inflater.inflate(R.layout.recent_fragment, container, false);
 
         mFavorsRequestedRecycler = (RecyclerView) view.findViewById(R.id.recent_requested_recycler);
         mFavorsDoneRecycler = (RecyclerView) view.findViewById(R.id.recent_done_recycler);
@@ -49,11 +53,19 @@ public class RecentFragment extends Fragment
         LinearLayoutManager llmDone = new LinearLayoutManager(getActivity());
         mFavorsRequestedRecycler.setLayoutManager(llmRequested);
         mFavorsRequestedRecycler.setLayoutManager(llmDone);
+
         mGoogleApiClient = ((MainActivity) getActivity()).getGoogleApiClient();
-        mRequestedAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
-        mDoneAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
+
+        mRequestedAdapter = new RecentFavorRecyclerAdapter(getActivity(), mGoogleApiClient);
+        mDoneAdapter = new RecentFavorRecyclerAdapter(getActivity(), mGoogleApiClient);
         mFavorsRequestedRecycler.setAdapter(mRequestedAdapter);
         mFavorsDoneRecycler.setAdapter(mDoneAdapter);
+
+        label_requested = (TextView) view.findViewById(R.id.label_favors_requested);
+        label_done = (TextView) view.findViewById(R.id.label_favors_done);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         prefs = getActivity().getSharedPreferences("com.favex", Context.MODE_PRIVATE);
 
@@ -71,6 +83,8 @@ public class RecentFragment extends Fragment
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
+
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -110,6 +124,34 @@ public class RecentFragment extends Fragment
                         }
                     }
                 });
+            }
+        });
+
+        label_requested.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View tmp = view.findViewById(R.id.recent_requested_recycler);
+
+                if(tmp.getVisibility() == View.GONE){
+                    tmp.setVisibility(View.VISIBLE);
+                }
+                else{
+                    tmp.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        label_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View tmp = view.findViewById(R.id.recent_done_recycler);
+
+                if(tmp.getVisibility() == View.GONE){
+                    tmp.setVisibility(View.VISIBLE);
+                }
+                else{
+                    tmp.setVisibility(View.GONE);
+                }
             }
         });
 

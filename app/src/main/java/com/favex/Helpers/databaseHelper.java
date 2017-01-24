@@ -123,6 +123,17 @@ public class databaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public String getUserName(String myFacebookId, String facebookId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor tmp = db.rawQuery("select * from " + TABLE_NAME_USERS + " WHERE " + COLUMN_NAME_OWNER + " = \"" + myFacebookId + "\"" + " AND " + COLUMN_NAME_FBID + " = \"" + facebookId + "\"", null);
+        if(tmp.getCount() > 0){
+            return tmp.getString(1);
+        }
+        else {
+            return "Favor Recipient";
+        }
+    }
+
     public Cursor getAllChats(String myFacebookId){
         SQLiteDatabase db = this.getReadableDatabase();
 
