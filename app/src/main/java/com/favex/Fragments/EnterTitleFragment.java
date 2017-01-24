@@ -62,7 +62,6 @@ public class EnterTitleFragment extends Fragment {
                 postInterface.postFavorToServer();
                 Intent i = new Intent(getActivity(), MainActivity.class);
                 getActivity().startActivity(i);
-                getActivity().finish();
             }
         });
         return view;

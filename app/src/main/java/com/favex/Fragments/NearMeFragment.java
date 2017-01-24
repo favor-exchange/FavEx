@@ -58,8 +58,8 @@ public class NearMeFragment extends Fragment {
         mAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
         mFavorRecycler.setAdapter(mAdapter);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //StrictMode.setThreadPolicy(policy);
 
         if(mGoogleApiClient == null){
             Log.e("googleapiclient", "null");
@@ -74,7 +74,8 @@ public class NearMeFragment extends Fragment {
             result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                    if (likelyPlaces.getCount() > 0) {
+
+                    if (likelyPlaces.getCount() != 0) {
                         PlaceLikelihood mostLikelyLocation = likelyPlaces.get(0);
                         for (int i = 1; i < likelyPlaces.getCount(); i++) {
                             if (likelyPlaces.get(i).getLikelihood() > mostLikelyLocation.getLikelihood()) //if other places have higher probability
@@ -84,7 +85,7 @@ public class NearMeFragment extends Fragment {
                         double userLng= mostLikelyLocation.getPlace().getLatLng().latitude;
                         likelyPlaces.release();
                         ApiClient.getNearbyFavors(String.valueOf(userLat),
-                                String.valueOf(userLng), "500").enqueue(new Callback() {
+                                String.valueOf(userLng), "50000000000000").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();
@@ -98,15 +99,21 @@ public class NearMeFragment extends Fragment {
 
                             @Override
                             public void onResponse(Call call, final Response response) throws IOException {
+
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         try {
+
                                             String responseString= response.body().string();
-                                            if(!responseString.equals("false"))
+                                            if(!responseString.equals("false")) {
                                                 mAdapter.setFavorList(new JSONArray(responseString));
-                                            else
-                                                Log.i("Near Me Fragment","False server response");
+                                            }
+                                            else {
+                                                Log.i("Near Me Fragment", "False server response");
+                                                Toast.makeText(getActivity(), "No favors found nearby", Toast.LENGTH_LONG).show();
+                                            }
+
                                         } catch (IOException | JSONException e) {
                                             e.printStackTrace();
                                         }

@@ -246,7 +246,7 @@ public class ChatService extends Service {
         long pattern[] = {0, 100, 300, 300};
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(ChatService.this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.mipmap.ic_favexlauncher)
                         .setContentTitle(contentTitle)
                         .setContentText(contentText)
                         .setVibrate(pattern);

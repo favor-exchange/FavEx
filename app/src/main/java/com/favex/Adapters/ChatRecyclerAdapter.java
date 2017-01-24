@@ -73,14 +73,6 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
             e.printStackTrace();
         }
 
-        /*if ((new Date()).after(strDate)) {
-            Log.e("date", "after");
-            viewHolder.mDate_Time.setText(users.getString(3));
-        }
-        else{
-            viewHolder.mDate_Time.setText(users.getString(6));
-        }*/
-
         viewHolder.mDate_Time.setText(users.getString(3));
 
         viewHolder.mFacebookId = users.getString(2);

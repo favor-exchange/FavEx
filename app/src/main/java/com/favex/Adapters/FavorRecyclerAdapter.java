@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
             viewHolder.mTitle.setText(favor.getString("title"));
             viewHolder.mDistance.setText(String.valueOf(favor.getInt("distance")));
             viewHolder.mTip.setText(String.valueOf(favor.getInt("tip")));
+            viewHolder.favorId = favor.getString("_id");
         }
         catch (JSONException e)
         {
@@ -109,6 +111,8 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
         private TextView mDistance;
         private TextView mAttribution;
         private TextView mTip;
+        private String favorId;
+
         public FavorViewHolder(final View itemView)
         {
             super(itemView);
@@ -119,6 +123,7 @@ public class FavorRecyclerAdapter extends RecyclerView.Adapter<FavorRecyclerAdap
             mDistance= (TextView)itemView.findViewById(R.id.distance);
             mAttribution= (TextView)itemView.findViewById(R.id.attribution);
             mTip = (TextView) itemView.findViewById(R.id.tip);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

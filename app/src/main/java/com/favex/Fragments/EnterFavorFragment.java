@@ -42,7 +42,9 @@ public class EnterFavorFragment extends Fragment {
     private ArrayList<OrderItem> orderItems;
     private PriceRangeSeekBar mPriceRange;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.enter_favor_fragment, container, false);
+
         orderItems= new ArrayList<>();
         mItemName= (EditText)view.findViewById(R.id.itemName);
         mItemCount= (TextView)view.findViewById(R.id.itemCount);
@@ -94,6 +96,7 @@ public class EnterFavorFragment extends Fragment {
                 mSub.setEnabled(true);
             }
         });
+
         mSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,18 +106,21 @@ public class EnterFavorFragment extends Fragment {
                     mSub.setEnabled(false);
             }
         });
+
         mAddOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OrderItem item= new OrderItem(mItemName.getText().toString(),
                         Integer.parseInt(mItemCount.getText().toString()));
-                ((FavorFormActivity)getActivity()).shallowCopyArrayList(orderItems);
-                orderItems.add(0,item);
+                orderItems.add(0, item);
+                ((FavorFormActivity)getActivity()).copyArrayList(orderItems);
                 orderRecyclerAdapter.notifyItemInserted(0);
                 Toast.makeText(getActivity(),mItemName.getText()+" added to list of size "+
                         String.valueOf(orderItems.size()),Toast.LENGTH_SHORT).show();
+                mItemName.setText("");
             }
         });
+
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

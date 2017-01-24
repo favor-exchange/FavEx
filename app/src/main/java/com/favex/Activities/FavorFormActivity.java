@@ -82,10 +82,16 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
     {
         destinationDetails=value;
     }
-    public void shallowCopyArrayList(ArrayList<OrderItem> listCopied)
+    public void copyArrayList(ArrayList<OrderItem> listCopied)
     {
-        orderItems= new ArrayList<>(listCopied);
+        orderItems = new ArrayList<>();
+        Log.e("size", String.valueOf(listCopied.size()));
+        for(int i = 0; i < listCopied.size(); i++){
+            orderItems.add(i, listCopied.get(i));
+            Log.e("item " + i, orderItems.get(i).getItemName());
+        }
     }
+
     public void setTip(double t)
     {
         tip=t;
@@ -169,7 +175,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             favorJSON.put("orderItems",OrderItem.orderItemsListToJsonArray(orderItems));
             favorJSON.put("priceRange",new JSONObject().put("min",priceRange[0]).put("max",priceRange[1]));
             favorJSON.put("recipientId",prefs.getString("facebookId","default"));
-            favorJSON.put("doerId",JSONObject.NULL);
+            favorJSON.put("doerId", JSONObject.NULL);
             favorJSON.put("tip",tip);
 
             JSONObject favorMainJSON=new JSONObject().put("favor",favorJSON);
@@ -177,10 +183,17 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
             ApiClient.addFavor(favorMainJSON).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(FavorFormActivity.this,"Unable to add favor",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     e.printStackTrace();
                 }
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    Log.e("favor", "added");
                     if(Boolean.parseBoolean(response.body().string())) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -188,6 +201,7 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
                                 logger = AppEventsLogger.newLogger(FavorFormActivity.this);
                                 logger.logEvent("newFavorAdded");
                                 Toast.makeText(FavorFormActivity.this,"Favor added successfully",Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         });
                     }

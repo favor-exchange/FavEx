@@ -1,6 +1,7 @@
 package com.favex.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,9 +30,11 @@ import com.favex.Adapters.OrderRecyclerAdapter;
 import com.favex.Helpers.databaseHelper;
 import com.favex.POJOs.OrderItem;
 import com.favex.R;
+import com.favex.RestManager.ApiClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
@@ -40,10 +44,15 @@ import com.google.android.gms.location.places.Places;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.zip.Inflater;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
@@ -61,12 +70,15 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
     private TextView mMinPrice;
     private TextView mMaxPrice;
     private TextView mTip;
+    private String favorId;
     private ViewPager mViewPager;
     private TextView mImageLabel;
     private GalleryAdapter adapter;
     private ArrayList<Bitmap> bitmaps= new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
-    private FloatingActionButton mFAB;
+    private FloatingActionButton mChatFAB;
+    private FloatingActionButton mDoFAB;
+    private FloatingActionButton mDoneFAB;
     SharedPreferences prefs;
     databaseHelper dbh;
 
@@ -94,7 +106,9 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
         LinearLayout mOrderList= (LinearLayout)findViewById(R.id.orderList);
         mTip= (TextView)findViewById(R.id.tip);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        mFAB = (FloatingActionButton) findViewById(R.id.chatBtn);
+        mChatFAB = (FloatingActionButton) findViewById(R.id.chatBtn);
+        mDoFAB = (FloatingActionButton) findViewById(R.id.doBtn);
+        mDoneFAB = (FloatingActionButton) findViewById(R.id.doneBtn);
         prefs = getSharedPreferences("com.favex", Context.MODE_PRIVATE);
         dbh = new databaseHelper(this);
 
@@ -126,6 +140,9 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
             mMaxPrice.setText(String.valueOf(favorJson.getJSONObject("priceRange").getInt("max")));
             mTip.setText(String.valueOf(favorJson.getDouble("tip")));
             mImageLabel.setText(favorJson.getString("locationFavorName"));
+            favorId = favorJson.getString("_id");
+
+
             placePhotosAsync(favorJson.getString("locationFavorId"));
             placePhotosAsync(favorJson.getString("locationRecipientId"));
 
@@ -140,10 +157,133 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
             final String myFacebookId =  prefs.getString("facebookId", "default");
 
             if(myFacebookId.compareTo(favorJson.getString("recipientId")) == 0){
-                mFAB.setVisibility(View.INVISIBLE);
+                mChatFAB.setVisibility(View.INVISIBLE);
+                mDoFAB.setVisibility(View.INVISIBLE);
+                mDoneFAB.setVisibility(View.VISIBLE);
+
+                mDoneFAB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!favorJson.isNull("doerId")) {
+
+                            try {
+
+                                if(favorJson.getBoolean("isComplete")){
+                                    new AlertDialog.Builder(FavorDetails.this)
+                                            .setTitle("Done")
+                                            .setMessage("This favor has been completed!")
+                                            .show();
+                                }
+                                else {
+
+                                    new AlertDialog.Builder(FavorDetails.this)
+                                            .setTitle("Favor Complete")
+                                            .setMessage("Has this favor been completed?")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    JSONObject favorObj = new JSONObject();
+                                                    JSONObject details = new JSONObject();
+
+                                                    try {
+                                                        details.put("_id", favorId);
+                                                        details.put("isComplete", true);
+                                                        favorObj.put("favor", details);
+                                                        ApiClient.updateFavorStatus(favorObj).enqueue(new Callback() {
+                                                            @Override
+                                                            public void onFailure(Call call, IOException e) {
+                                                                Log.e("UpdateFavorStatus", "failed");
+                                                                runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Toast.makeText(FavorDetails.this, "Failed to update favor", Toast.LENGTH_LONG);
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onResponse(Call call, Response response) throws IOException {
+                                                                Log.e("UpdateFavorStatus", "success");
+                                                                runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Toast.makeText(FavorDetails.this, "Successfully updated favor!", Toast.LENGTH_LONG);
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(FavorDetails.this, "Failed to update favor", Toast.LENGTH_LONG);
+                                                    }
+                                                }
+                                            })
+                                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                }
+                                            })
+                                            .show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else{
+                            new AlertDialog.Builder(FavorDetails.this)
+                                    .setTitle("Favor Not Accepted")
+                                    .setMessage("This favor has not been accepted yet, cancel it?")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            JSONObject favorObj = new JSONObject();
+                                            JSONObject details = new JSONObject();
+
+                                            try {
+                                                details.put("_id", favorId);
+                                                favorObj.put("favor", details);
+                                                ApiClient.deleteFavor(favorObj).enqueue(new Callback() {
+                                                    @Override
+                                                    public void onFailure(Call call, IOException e) {
+                                                        Log.e("DeleteFavor", "failed");
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                Toast.makeText(FavorDetails.this, "Failed to cancel favor", Toast.LENGTH_LONG);
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(Call call, Response response) throws IOException {
+                                                        Log.e("DeleteFavor", "success");
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                Toast.makeText(FavorDetails.this, "Successfully cancelled favor!", Toast.LENGTH_LONG);
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(FavorDetails.this, "Failed to cancel favor", Toast.LENGTH_LONG);
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                });
             }
             else {
-                mFAB.setOnClickListener(new View.OnClickListener() {
+                mDoneFAB.setVisibility(View.INVISIBLE);
+                mChatFAB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent in = new Intent(FavorDetails.this, MessagesActivity.class);
@@ -157,11 +297,75 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                         String date = String.valueOf(day)+ "/" + String.valueOf(month) + "/" + String.valueOf(year);
                         try {
                             in.putExtra("facebookId", favorJson.getString("recipientId"));
-                            in.putExtra("sender", "Favor Recipient");
-                            dbh.insertUser(dbh.getUserName(myFacebookId, favorJson.getString("recipientId")), favorJson.getString("recipientId"), date, prefs.getString("facebookId", "default"),time);
+
+                            String mSender = dbh.getUserName(myFacebookId, favorJson.getString("recipientId"));
+                            in.putExtra("sender", mSender);
+                            dbh.insertUser(mSender, favorJson.getString("recipientId"), date, prefs.getString("facebookId", "default"),time);
                             startActivity(in);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        }
+                    }
+                });
+
+                mDoFAB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(favorJson.isNull("doerId")) {
+                            new AlertDialog.Builder(FavorDetails.this)
+                                    .setTitle("Accept Favor")
+                                    .setMessage("Are you sure you want to accept this favor?")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            JSONObject favorObj = new JSONObject();
+                                            JSONObject details = new JSONObject();
+
+                                            try {
+                                                details.put("_id", favorId);
+                                                details.put("doerId", myFacebookId);
+                                                favorObj.put("favor", details);
+                                                ApiClient.updateDoer(favorObj).enqueue(new Callback() {
+                                                    @Override
+                                                    public void onFailure(Call call, IOException e) {
+                                                        Log.e("UpdateDoer", "failed");
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                Toast.makeText(FavorDetails.this, "Failed to accept favor", Toast.LENGTH_LONG);
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(Call call, Response response) throws IOException {
+                                                        Log.e("UpdateDoer", "success");
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                Toast.makeText(FavorDetails.this, "Successfully accepted favor!", Toast.LENGTH_LONG);
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(FavorDetails.this, "Failed to accept favor", Toast.LENGTH_LONG);
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .show();
+                        }
+                        else {
+                            new AlertDialog.Builder(FavorDetails.this)
+                                    .setTitle("Can't Accept this Favor")
+                                    .setMessage("Sorry, somebody else is already doing this favor!")
+                                    .show();
                         }
                     }
                 });

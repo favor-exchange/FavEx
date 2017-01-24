@@ -172,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
                 });
                 break;
-            case R.id.action_settings:
         }
         return true;
     }

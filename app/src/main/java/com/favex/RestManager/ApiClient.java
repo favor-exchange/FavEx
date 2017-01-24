@@ -15,8 +15,9 @@ import okhttp3.RequestBody;
  */
 
 public class ApiClient {
-    private static String baseUrl="192.168.1.104";
-    private static int port= 80;
+    private static String baseUrl="192.168.1.4";
+    //54.201.173.243
+    private static int port= 3000;
     private static String addFavorEndpoint= "addFavor";
     private static String addUserEndpoint = "addUser";
     private static String getUserEndpoint = "getUser";
@@ -97,6 +98,7 @@ public class ApiClient {
                 .get()
                 .url(httpUrl)
                 .build();
+        Log.i("API CLIENT","FAVORS REQUESTED!");
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
     }
 
@@ -112,6 +114,7 @@ public class ApiClient {
         Request request= new Request.Builder()
                 .url(httpUrl)
                 .build();
+        Log.i("API CLIENT","FAVORS DONE!");
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
     }
 

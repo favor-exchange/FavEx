@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,7 @@ public class RecentFavorRecyclerAdapter extends RecyclerView.Adapter<RecentFavor
             holder.mMaxPrice.setText(String.valueOf(favor.getJSONObject("priceRange").getInt("max")));
             holder.mTitle.setText(favor.getString("title"));
             holder.mTip.setText(String.valueOf(favor.getInt("tip")));
+            holder.favorId = favor.getString("_id");
         }
         catch (JSONException e)
         {
@@ -98,6 +100,7 @@ public class RecentFavorRecyclerAdapter extends RecyclerView.Adapter<RecentFavor
         private TextView mTitle;
         private TextView mAttribution;
         private TextView mTip;
+        private String favorId;
 
         public RecentFavorViewHolder(View itemView) {
             super(itemView);

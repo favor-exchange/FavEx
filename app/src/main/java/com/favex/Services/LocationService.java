@@ -143,7 +143,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                                     long pattern[] = {0, 100, 300, 300};
                                     NotificationCompat.Builder mBuilder =
                                             new NotificationCompat.Builder(LocationService.this)
-                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setSmallIcon(R.mipmap.ic_favexlauncher)
                                                     .setContentTitle("We found a favor nearby")
                                                     .setContentText(closestFavor.getString("title"))
                                                     .setVibrate(pattern);
