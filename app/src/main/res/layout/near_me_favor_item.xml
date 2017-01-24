@@ -5,7 +5,7 @@
     android:id="@+id/favor_card"
     android:layout_margin="@dimen/activity_horizontal_margin"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="200dp"
     card_view:cardCornerRadius="4dp">
 
     <RelativeLayout
@@ -57,26 +57,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="$0"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="4dp"
                     android:id="@+id/minPrice"
-                    android:layout_toRightOf="@id/priceLabel"
-                    android:layout_below="@id/tipLabel"/>
+                    android:layout_below="@id/priceLabel"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/minPrice"
                     android:text=" to "
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="4dp"
                     android:id="@+id/priceConjunction"
-                    android:layout_below="@id/tipLabel"/>
+                    android:layout_below="@id/priceLabel"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/priceConjunction"
                     android:text="$10"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="4dp"
                     android:id="@+id/maxPrice"
-                    android:layout_below="@id/tipLabel"/>
+                    android:layout_below="@id/priceLabel"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,7 +100,8 @@
                 android:layout_weight="0.5"
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:adjustViewBounds="false" />
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"

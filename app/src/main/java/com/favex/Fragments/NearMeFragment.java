@@ -3,8 +3,6 @@ package com.favex.Fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,8 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,12 +37,11 @@ import okhttp3.Response;
  * Created by Tavish on 06-Jan-17.
  */
 
-public class NearMeFragment extends Fragment {
+public class NearMeFragment extends Fragment{
     private RecyclerView mFavorRecycler;
     protected FavorRecyclerAdapter mAdapter;
     private GoogleApiClient mGoogleApiClient;
     private String userLocationId;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.near_me_fragment, container, false);
@@ -58,18 +53,17 @@ public class NearMeFragment extends Fragment {
         mAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
         mFavorRecycler.setAdapter(mAdapter);
 
-        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        //StrictMode.setThreadPolicy(policy);
-
         if(mGoogleApiClient == null){
             Log.e("googleapiclient", "null");
         }
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        } else {
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            Toast.makeText(getActivity(),"Please enable location permission to fetch nearby favors",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
             PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
             result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
@@ -82,10 +76,10 @@ public class NearMeFragment extends Fragment {
                                 mostLikelyLocation = likelyPlaces.get(i);
                         }
                         double userLat= mostLikelyLocation.getPlace().getLatLng().latitude;
-                        double userLng= mostLikelyLocation.getPlace().getLatLng().latitude;
+                        double userLng= mostLikelyLocation.getPlace().getLatLng().longitude;
                         likelyPlaces.release();
                         ApiClient.getNearbyFavors(String.valueOf(userLat),
-                                String.valueOf(userLng), "50000000000000").enqueue(new Callback() {
+                                String.valueOf(userLng), "500").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();
@@ -122,44 +116,13 @@ public class NearMeFragment extends Fragment {
                             }
                         });
                     }
-                    else{
+                    else
+                    {
                         Toast.makeText(getActivity(), "no nearby places found", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
         return view;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
-                    result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-                        @Override
-                        public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                            if(likelyPlaces.getCount() != 0) {
-                                PlaceLikelihood mostLikelyLocation = likelyPlaces.get(0);
-                                for (int i = 1; i < likelyPlaces.getCount(); i++) {
-                                    if (likelyPlaces.get(i).getLikelihood() > mostLikelyLocation.getLikelihood()) //if other places have higher probability
-                                        mostLikelyLocation = likelyPlaces.get(i);
-                                }
-                                userLocationId = mostLikelyLocation.getPlace().getId();
-                                likelyPlaces.release();
-                            }
-                            else{
-                                Toast.makeText(getActivity(), "no nearby places found", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                } else {
-                    Toast.makeText(getActivity(), "Location permissions needed to find favors near you",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
     }
 }

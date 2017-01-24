@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -56,18 +57,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         prefs = getSharedPreferences(
                 "com.favex", Context.MODE_PRIVATE);
 
-        if (!isMyServiceRunning(ChatService.class)) {
-
-            Intent mServiceIntent = new Intent(this, ChatService.class);
-            mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
-            startService(mServiceIntent);
-        }
-
-        if (!isMyServiceRunning(LocationService.class)) {
-            Intent mServiceIntent = new Intent(this, LocationService.class);
-            startService(mServiceIntent);
-        }
-
         mAddFavor= (FloatingActionButton)findViewById(R.id.addFavor);
         mAddFavor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,18 +81,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             }
         }
+        else
+        {
+            if (!isMyServiceRunning(ChatService.class)) {
+                Intent mServiceIntent = new Intent(this, ChatService.class);
+                mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
+                startService(mServiceIntent);
+            }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+            if (!isMyServiceRunning(LocationService.class)) {
+                Intent mServiceIntent = new Intent(this, LocationService.class);
+                startService(mServiceIntent);
+            }
 
-        viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
+            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+            viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
 
-        int defaultValue = 0;
-        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
-        viewPager.setCurrentItem(page);
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+            tabLayout.setupWithViewPager(viewPager);
 
+            int defaultValue = 0;
+            int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
+            viewPager.setCurrentItem(page);
+        }
     }
 
     private boolean addPermission(List<String> permissionsList, String permission) {
@@ -131,6 +132,52 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     {
         return mGoogleApiClient;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS:
+                if(grantResults.length>0)
+                {
+                    for(int i=0;i<grantResults.length;i++)
+                    {
+                        if(grantResults[i]==PackageManager.PERMISSION_DENIED)
+                        {
+                            if(permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION))
+                                Toast.makeText(this,"Location needed to display favors near you",Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(this,"Storage permission needed to save your info",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+
+            default: Toast.makeText(this,"Permissions Callback Error",Toast.LENGTH_SHORT).show();
+        }
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+
+        viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        int defaultValue = 0;
+        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
+
+        viewPager.setCurrentItem(page);
+        if (!isMyServiceRunning(ChatService.class)) {
+            Intent mServiceIntent = new Intent(this, ChatService.class);
+            mServiceIntent.putExtra("myFacebookId", prefs.getString("facebookId", "default"));
+            startService(mServiceIntent);
+        }
+
+        if (!isMyServiceRunning(LocationService.class)) {
+            Intent mServiceIntent = new Intent(this, LocationService.class);
+            startService(mServiceIntent);
+        }
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
     {

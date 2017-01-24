@@ -77,17 +77,17 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            Log.i("LOCATION SERVICE","LOCATION UPDATE NOT REGISTERED AS LOCATION PERMISSION WAS DENIED");
             return;
         }
         //initially get last known location
         mCurrentLocation = fusedLocationProviderApi.getLastLocation(mLocationClient);
+        if(mCurrentLocation!=null)
+        {
+            double lat= mCurrentLocation.getLatitude();
+            double lng= mCurrentLocation.getLongitude();
+            searchForNearbyFavors(lat,lng,500);
+        }
         //register for location updates
         LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this);
 
@@ -104,10 +104,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void setLocationParameter() {
-        mLocationRequest.setInterval(300000);
+        mLocationRequest.setInterval(60000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(0);
-        mLocationRequest.setFastestInterval(300000);
+        mLocationRequest.setFastestInterval(60000);
     }
 
     @Override
@@ -115,7 +115,18 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.i("LOCATION SERVICE","LOCATION CHANGED!");
         double lat= location.getLatitude();
         double lng= location.getLongitude();
-        ApiClient.getNearbyFavors(String.valueOf(lat),String.valueOf(lng),"500")
+        searchForNearbyFavors(lat,lng,500);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient,this);
+    }
+
+    public void searchForNearbyFavors(double lat, double lng, int distance)
+    {
+        ApiClient.getNearbyFavors(String.valueOf(lat),String.valueOf(lng),String.valueOf(distance))
                 .enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
@@ -163,9 +174,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                                     mNotificationManager = (NotificationManager) LocationService.this
                                             .getSystemService(Context.NOTIFICATION_SERVICE);
                                     mNotificationManager.notify(0, mBuilder.build());
-
                                 }
-
                             }
                             else
                             {
@@ -178,11 +187,5 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                         }
                     }
                 });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient,this);
     }
 }
