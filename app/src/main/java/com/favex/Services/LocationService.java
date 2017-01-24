@@ -3,6 +3,7 @@ package com.favex.Services;
 import android.Manifest;
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +16,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.favex.Activities.FavorDetails;
+import com.favex.Activities.MainActivity;
 import com.favex.R;
 import com.favex.RestManager.ApiClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -100,9 +104,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void setLocationParameter() {
-        mLocationRequest.setInterval(30); // 30 seconds for testing
+        mLocationRequest.setInterval(300000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(0); //0 for testing
+        mLocationRequest.setSmallestDisplacement(0);
+        mLocationRequest.setFastestInterval(300000);
     }
 
     @Override
@@ -122,24 +127,49 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                         try
                         {
                             Log.i("LOCATION SERVICE","SERVICE API RESPONSE");
-                            JSONArray jsonArray= new JSONArray(response.body().string());
-                            if(jsonArray.length()> 0)
+                            String responseString= response.body().string();
+                            if(!responseString.equals("false"))
                             {
-                                JSONObject closestFavor= jsonArray.getJSONObject(0);
-                                for(int i=1;i<jsonArray.length();i++)
+                                JSONArray jsonArray= new JSONArray(responseString);
+                                if(jsonArray.length()> 0)
                                 {
-                                    if(closestFavor.getInt("distance") > jsonArray
-                                            .getJSONObject(i).getInt("distance"))
-                                        closestFavor=jsonArray.getJSONObject(i);
+                                    JSONObject closestFavor= jsonArray.getJSONObject(0);
+                                    for(int i=1;i<jsonArray.length();i++)
+                                    {
+                                        if(closestFavor.getInt("distance") > jsonArray
+                                                .getJSONObject(i).getInt("distance"))
+                                            closestFavor=jsonArray.getJSONObject(i);
+                                    }
+                                    long pattern[] = {0, 100, 300, 300};
+                                    NotificationCompat.Builder mBuilder =
+                                            new NotificationCompat.Builder(LocationService.this)
+                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setContentTitle("We found a favor nearby")
+                                                    .setContentText(closestFavor.getString("title"))
+                                                    .setVibrate(pattern);
+                                    Intent resultIntent = new Intent(LocationService.this, FavorDetails.class);
+                                    resultIntent.putExtra("favorJsonString", closestFavor.toString());
+                                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(LocationService.this);
+                                    // Adds the back stack for the Intent (but not the Intent itself)
+                                    stackBuilder.addParentStack(MainActivity.class);
+                                    // Adds the Intent that starts the Activity to the top of the stack
+                                    stackBuilder.addNextIntent(resultIntent);
+                                    PendingIntent resultPendingIntent =
+                                            stackBuilder.getPendingIntent(
+                                                    0,
+                                                    PendingIntent.FLAG_UPDATE_CURRENT
+                                            );
+                                    mBuilder.setContentIntent(resultPendingIntent);
+                                    mNotificationManager = (NotificationManager) LocationService.this
+                                            .getSystemService(Context.NOTIFICATION_SERVICE);
+                                    mNotificationManager.notify(0, mBuilder.build());
+
                                 }
-                                NotificationCompat.Builder mBuilder =
-                                        new NotificationCompat.Builder(LocationService.this)
-                                                .setSmallIcon(R.mipmap.ic_launcher)
-                                                .setContentTitle("Favors nearby")
-                                                .setContentText("content text");
-                                mNotificationManager = (NotificationManager) LocationService.this
-                                        .getSystemService(Context.NOTIFICATION_SERVICE);
-                                mNotificationManager.notify(0, mBuilder.build());
+
+                            }
+                            else
+                            {
+                                Log.i("LOCATION SERVICE", "SERVER SENT FAIL RESPONSE");
                             }
                         }
                         catch (JSONException e)

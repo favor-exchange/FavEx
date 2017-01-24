@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,8 +94,11 @@ public class NearMeFragment extends Fragment {
                                     @Override
                                     public void run() {
                                         try {
-                                            //if(!response.body().string().equals("false"))
-                                            mAdapter.setFavorList(new JSONArray(response.body().string()));
+                                            String responseString= response.body().string();
+                                            if(!responseString.equals("false"))
+                                                mAdapter.setFavorList(new JSONArray(responseString));
+                                            else
+                                                Log.i("Near Me Fragment","False server response");
                                         } catch (IOException | JSONException e) {
                                             e.printStackTrace();
                                         }

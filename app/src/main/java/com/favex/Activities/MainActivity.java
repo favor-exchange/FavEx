@@ -68,17 +68,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             startService(mServiceIntent);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-
-        viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-        int defaultValue = 0;
-        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
-        viewPager.setCurrentItem(page);
-
         mAddFavor= (FloatingActionButton)findViewById(R.id.addFavor);
         mAddFavor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,8 +91,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                         REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             }
-            return;
         }
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+
+        viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        int defaultValue = 0;
+        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
+        viewPager.setCurrentItem(page);
 
     }
 
