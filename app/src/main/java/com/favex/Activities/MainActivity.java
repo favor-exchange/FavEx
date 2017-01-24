@@ -27,6 +27,7 @@ import com.facebook.login.LoginManager;
 import com.favex.R;
 import com.favex.Adapters.TabFragmentPagerAdapter;
 import com.favex.Services.ChatService;
+import com.favex.Services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -62,16 +63,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             startService(mServiceIntent);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-
-        viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-        int defaultValue = 0;
-        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
-        viewPager.setCurrentItem(page);
+        if (!isMyServiceRunning(LocationService.class)) {
+            Intent mServiceIntent = new Intent(this, LocationService.class);
+            startService(mServiceIntent);
+        }
 
         mAddFavor= (FloatingActionButton)findViewById(R.id.addFavor);
         mAddFavor.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +91,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                         REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             }
-            return;
         }
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+
+        viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        int defaultValue = 0;
+        int page = getIntent().getIntExtra("ARG_PAGE", defaultValue);
+        viewPager.setCurrentItem(page);
 
     }
 

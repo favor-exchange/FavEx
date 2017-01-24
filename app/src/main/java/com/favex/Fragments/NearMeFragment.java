@@ -3,7 +3,6 @@ package com.favex.Fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -80,9 +79,11 @@ public class NearMeFragment extends Fragment {
                             if (likelyPlaces.get(i).getLikelihood() > mostLikelyLocation.getLikelihood()) //if other places have higher probability
                                 mostLikelyLocation = likelyPlaces.get(i);
                         }
-                        userLocationId = mostLikelyLocation.getPlace().getId();
+                        double userLat= mostLikelyLocation.getPlace().getLatLng().latitude;
+                        double userLng= mostLikelyLocation.getPlace().getLatLng().latitude;
                         likelyPlaces.release();
-                        ApiClient.getNearbyFavors(userLocationId, "1000").enqueue(new Callback() {
+                        ApiClient.getNearbyFavors(String.valueOf(userLat),
+                                String.valueOf(userLng), "500").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();
@@ -100,8 +101,11 @@ public class NearMeFragment extends Fragment {
                                     @Override
                                     public void run() {
                                         try {
-                                            //if(!response.body().string().equals("false"))
-                                            mAdapter.setFavorList(new JSONArray(response.body().string()));
+                                            String responseString= response.body().string();
+                                            if(!responseString.equals("false"))
+                                                mAdapter.setFavorList(new JSONArray(responseString));
+                                            else
+                                                Log.i("Near Me Fragment","False server response");
                                         } catch (IOException | JSONException e) {
                                             e.printStackTrace();
                                         }

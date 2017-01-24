@@ -1,5 +1,7 @@
 package com.favex.RestManager;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import okhttp3.Call;
@@ -13,7 +15,7 @@ import okhttp3.RequestBody;
  */
 
 public class ApiClient {
-    private static String baseUrl="54.201.173.243";
+    private static String baseUrl="192.168.1.104";
     private static int port= 80;
     private static String addFavorEndpoint= "addFavor";
     private static String addUserEndpoint = "addUser";
@@ -113,19 +115,24 @@ public class ApiClient {
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
     }
 
-    public static Call getNearbyFavors(String userLocationId, String distance)
+    public static Call getNearbyFavors(/*String userLocationId*/String lat, String lng, String distance)
     {
         HttpUrl httpUrl= new HttpUrl.Builder()
                 .scheme("http")
                 .host(baseUrl)
                 .port(port)
                 .addPathSegment(getNearbyFavorsEndpoint)
-                .addQueryParameter("userLocationId",userLocationId)
+                //.addQueryParameter("userLocationId",userLocationId)
+                /*********************************/
+                .addQueryParameter("lat",lat)
+                .addQueryParameter("lng",lng)
+                 /**********************************/
                 .addQueryParameter("distance",distance)
                 .build();
         Request request= new Request.Builder()
                 .url(httpUrl)
                 .build();
+        Log.i("API CLIENT","NEARBY FAVORS!");
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
     }
 

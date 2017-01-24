@@ -90,7 +90,7 @@ public class RecentFragment extends Fragment
                     public void run() {
                         try {
                             //if(!response.body().string().equals("false"))
-                            mRequestedAdapter.setFavorList(new JSONArray(response.body().string()));
+                                mRequestedAdapter.setFavorList(new JSONArray(response.body().string()));
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
                         }
