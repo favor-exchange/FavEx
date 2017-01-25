@@ -94,31 +94,32 @@ public class NearMeFragment extends Fragment{
                             @Override
                             public void onResponse(Call call, final Response response) throws IOException {
 
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
+                                if(getActivity() != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
 
-                                            String responseString= response.body().string();
-                                            if(!responseString.equals("false")) {
-                                                mAdapter.setFavorList(new JSONArray(responseString));
-                                            }
-                                            else {
-                                                Log.i("Near Me Fragment", "False server response");
-                                                Toast.makeText(getActivity(), "No favors found nearby", Toast.LENGTH_LONG).show();
-                                            }
+                                                String responseString = response.body().string();
+                                                if (!responseString.equals("false")) {
+                                                    mAdapter.setFavorList(new JSONArray(responseString));
+                                                } else {
+                                                    Log.i("Near Me Fragment", "False server response");
+                                                    Toast.makeText(getActivity(), "No favors found nearby", Toast.LENGTH_LONG).show();
+                                                }
 
-                                        } catch (IOException | JSONException e) {
-                                            e.printStackTrace();
+                                            } catch (IOException | JSONException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
                         });
                     }
                     else
                     {
-                        Toast.makeText(getActivity(), "no nearby places found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "No nearby places found", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

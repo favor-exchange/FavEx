@@ -31,7 +31,12 @@
         <activity android:name=".Activities.MessagesActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.FavorDetails"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.MainActivity" />
+        </activity>
         <activity android:name=".Activities.login"
             android:screenOrientation="portrait">
             <intent-filter>

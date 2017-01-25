@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.favex.Adapters.FavorRecyclerAdapter;
 import com.favex.Adapters.GalleryAdapter;
@@ -157,6 +158,10 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                 mOrderList.addView(item);
             }
             final String myFacebookId =  prefs.getString("facebookId", "default");
+            if(!FacebookSdk.isInitialized()){
+                FacebookSdk.sdkInitialize(getApplicationContext());
+            }
+            logger = AppEventsLogger.newLogger(FavorDetails.this);
 
             if(myFacebookId.compareTo(favorJson.getString("recipientId")) == 0){
                 mChatFAB.setVisibility(View.INVISIBLE);
@@ -166,7 +171,6 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                 mDoneFAB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        logger = AppEventsLogger.newLogger(FavorDetails.this);
 
                         if(!favorJson.isNull("doerId")) {
 
@@ -200,7 +204,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                                 runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        Toast.makeText(FavorDetails.this, "Failed to update favor", Toast.LENGTH_LONG);
+                                                                        Toast.makeText(FavorDetails.this, "Failed to update favor", Toast.LENGTH_LONG).show();
                                                                     }
                                                                 });
                                                             }
@@ -214,14 +218,14 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                                 runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        Toast.makeText(FavorDetails.this, "Successfully updated favor!", Toast.LENGTH_LONG);
+                                                                        Toast.makeText(FavorDetails.this, "Successfully updated favor!", Toast.LENGTH_LONG).show();
                                                                     }
                                                                 });
                                                             }
                                                         });
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
-                                                        Toast.makeText(FavorDetails.this, "Failed to update favor", Toast.LENGTH_LONG);
+                                                        Toast.makeText(FavorDetails.this, "Failed to update favor", Toast.LENGTH_LONG).show();
                                                     }
                                                 }
                                             })
@@ -256,7 +260,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                         runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                Toast.makeText(FavorDetails.this, "Failed to cancel favor", Toast.LENGTH_LONG);
+                                                                Toast.makeText(FavorDetails.this, "Failed to cancel favor", Toast.LENGTH_LONG).show();
                                                             }
                                                         });
                                                     }
@@ -270,14 +274,15 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                         runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                Toast.makeText(FavorDetails.this, "Successfully cancelled favor!", Toast.LENGTH_LONG);
+                                                                Toast.makeText(FavorDetails.this, "Successfully cancelled favor!", Toast.LENGTH_LONG).show();
+                                                                finish();
                                                             }
                                                         });
                                                     }
                                                 });
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
-                                                Toast.makeText(FavorDetails.this, "Failed to cancel favor", Toast.LENGTH_LONG);
+                                                Toast.makeText(FavorDetails.this, "Failed to cancel favor", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     })
@@ -342,7 +347,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                         runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                Toast.makeText(FavorDetails.this, "Failed to accept favor", Toast.LENGTH_LONG);
+                                                                Toast.makeText(FavorDetails.this, "Failed to accept favor", Toast.LENGTH_LONG).show();
                                                             }
                                                         });
                                                     }
@@ -356,14 +361,15 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                         runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                Toast.makeText(FavorDetails.this, "Successfully accepted favor!", Toast.LENGTH_LONG);
+                                                                Toast.makeText(FavorDetails.this, "Successfully accepted favor!", Toast.LENGTH_LONG).show();
+                                                                finish();
                                                             }
                                                         });
                                                     }
                                                 });
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
-                                                Toast.makeText(FavorDetails.this, "Failed to accept favor", Toast.LENGTH_LONG);
+                                                Toast.makeText(FavorDetails.this, "Failed to accept favor", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     })
