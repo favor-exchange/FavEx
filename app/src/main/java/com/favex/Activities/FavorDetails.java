@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.favex.Adapters.FavorRecyclerAdapter;
 import com.favex.Adapters.GalleryAdapter;
 import com.favex.Adapters.OrderRecyclerAdapter;
@@ -80,6 +81,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
     private FloatingActionButton mDoFAB;
     private FloatingActionButton mDoneFAB;
     SharedPreferences prefs;
+    private AppEventsLogger logger;
     databaseHelper dbh;
 
     private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback= new ResultCallback<PlacePhotoResult>() {
@@ -164,6 +166,8 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                 mDoneFAB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        logger = AppEventsLogger.newLogger(FavorDetails.this);
+
                         if(!favorJson.isNull("doerId")) {
 
                             try {
@@ -204,6 +208,9 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                             @Override
                                                             public void onResponse(Call call, Response response) throws IOException {
                                                                 Log.e("UpdateFavorStatus", "success");
+
+                                                                logger.logEvent("favorCompleted");
+
                                                                 runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
@@ -256,6 +263,9 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
 
                                                     @Override
                                                     public void onResponse(Call call, Response response) throws IOException {
+
+                                                        logger.logEvent("favorCancelled");
+
                                                         Log.e("DeleteFavor", "success");
                                                         runOnUiThread(new Runnable() {
                                                             @Override
@@ -271,7 +281,7 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                             }
                                         }
                                     })
-                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    .setNegativeButton("DON'T CANCEL", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
                                         }
@@ -340,6 +350,9 @@ public class FavorDetails extends AppCompatActivity implements GoogleApiClient.O
                                                     @Override
                                                     public void onResponse(Call call, Response response) throws IOException {
                                                         Log.e("UpdateDoer", "success");
+
+                                                        logger.logEvent("favorAccepted");
+
                                                         runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.favex.Adapters.MessagesRecyclerAdapter;
 import com.favex.Applications.ChatApplication;
 import com.favex.Helpers.databaseHelper;
@@ -48,6 +49,7 @@ public class MessagesActivity extends AppCompatActivity{
     private String senderName;
     private String myFacebookId;
     private Receiver mReceiver;
+    private AppEventsLogger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,9 @@ public class MessagesActivity extends AppCompatActivity{
 
                 //in db stores other persons fb id but sends own fb id in json object
                 mSocket.emit("new message", mJSON);
+
+                logger = AppEventsLogger.newLogger(MessagesActivity.this);
+                logger.logEvent("newMessageSent");
 
                 //sender in local db should be my fb id to display messages correctly
                 dbh.insertMessage(message, myFacebookId, senderFacebookId, time, date, myFacebookId);
