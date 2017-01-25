@@ -118,18 +118,15 @@ public class ApiClient {
         return OkHttpSingleton.getOkHttpInstance().getOkHttpClient().newCall(request);
     }
 
-    public static Call getNearbyFavors(/*String userLocationId*/String lat, String lng, String distance)
+    public static Call getNearbyFavors(String lat, String lng, String distance)
     {
         HttpUrl httpUrl= new HttpUrl.Builder()
                 .scheme("http")
                 .host(baseUrl)
                 .port(port)
                 .addPathSegment(getNearbyFavorsEndpoint)
-                //.addQueryParameter("userLocationId",userLocationId)
-                /*********************************/
                 .addQueryParameter("lat",lat)
                 .addQueryParameter("lng",lng)
-                 /**********************************/
                 .addQueryParameter("distance",distance)
                 .build();
         Request request= new Request.Builder()
