@@ -15,9 +15,9 @@ import okhttp3.RequestBody;
  */
 
 public class ApiClient {
-    private static String baseUrl="192.168.1.4";
+    private static String baseUrl="54.201.173.243";
     //54.201.173.243
-    private static int port= 3000;
+    private static int port= 80;
     private static String addFavorEndpoint= "addFavor";
     private static String addUserEndpoint = "addUser";
     private static String getUserEndpoint = "getUser";
