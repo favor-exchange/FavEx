@@ -19,11 +19,11 @@ public class OkHttpSingleton{
     private OkHttpSingleton(){
 
         File cacheDir = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
-        Cache cache = new Cache(cacheDir, 1024 * 10 * 10);
+        Cache cache = new Cache(cacheDir, 1024 * 10 * 10 * 10);
 
         okHttpClient= new OkHttpClient.Builder()
                 .readTimeout(300, TimeUnit.SECONDS)
-                //.cache(cache)
+                .cache(cache)
                 .build();
 
     }
