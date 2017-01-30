@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.favex.Activities.MainActivity;
-import com.favex.Adapters.RecentFavorRecyclerAdapter;
+import com.favex.Adapters.FavorRecyclerAdapter;
 import com.favex.R;
 import com.favex.RestManager.ApiClient;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,8 +37,8 @@ public class RecentFragment extends Fragment
 {
     private RecyclerView mFavorsRequestedRecycler;
     private RecyclerView mFavorsDoneRecycler;
-    protected RecentFavorRecyclerAdapter mRequestedAdapter;
-    protected RecentFavorRecyclerAdapter mDoneAdapter;
+    protected FavorRecyclerAdapter mRequestedAdapter;
+    protected FavorRecyclerAdapter mDoneAdapter;
     private GoogleApiClient mGoogleApiClient;
     private TextView label_requested;
     private TextView label_done;
@@ -57,8 +57,8 @@ public class RecentFragment extends Fragment
 
         mGoogleApiClient = ((MainActivity) getActivity()).getGoogleApiClient();
 
-        mRequestedAdapter = new RecentFavorRecyclerAdapter(getActivity(), mGoogleApiClient);
-        mDoneAdapter = new RecentFavorRecyclerAdapter(getActivity(), mGoogleApiClient);
+        mRequestedAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
+        mDoneAdapter = new FavorRecyclerAdapter(getActivity(), mGoogleApiClient);
         mFavorsRequestedRecycler.setAdapter(mRequestedAdapter);
         mFavorsDoneRecycler.setAdapter(mDoneAdapter);
 
@@ -94,7 +94,8 @@ public class RecentFragment extends Fragment
                             if(!responseString.equals("false")) {
                                 mRequestedAdapter.setFavorList(new JSONArray(responseString));
                             }
-                            else {
+                            else
+                            {
                                 Log.i("Near Me Fragment", "False server response");
                             }
                         } catch (IOException | JSONException e) {
