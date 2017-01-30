@@ -164,12 +164,17 @@ public class FavorFormActivity extends AppCompatActivity implements GoogleApiCli
         {
             JSONObject favorJSON= new JSONObject();
             favorJSON.put("locationFavorId",favorLocation.getId());
+            favorJSON.put("favorLatLng",new JSONObject().put("lat",favorLocation.getLatLng().latitude)
+                                                        .put("lng",favorLocation.getLatLng().longitude));
             favorJSON.put("locationRecipientId",destination.getId());
+            favorJSON.put("recipientLatLng",new JSONObject().put("lat",destination.getLatLng().latitude)
+                                                            .put("lng",destination.getLatLng().longitude));
             favorJSON.put("locationFavorAddress",favorLocation.getAddress());
             favorJSON.put("locationRecipientAddress",destination.getAddress());
             favorJSON.put("locationFavorName",favorLocation.getName());
             favorJSON.put("locationRecipientName",destination.getName());
             favorJSON.put("isComplete",false);
+            favorJSON.put("distance",0);
             favorJSON.put("title",favorTitle);
             favorJSON.put("details",destinationDetails);
             favorJSON.put("orderItems",OrderItem.orderItemsListToJsonArray(orderItems));

@@ -94,7 +94,8 @@ public class RecentFragment extends Fragment
                             if(!responseString.equals("false")) {
                                 mRequestedAdapter.setFavorList(new JSONArray(responseString));
                             }
-                            else {
+                            else
+                            {
                                 Log.i("Near Me Fragment", "False server response");
                             }
                         } catch (IOException | JSONException e) {

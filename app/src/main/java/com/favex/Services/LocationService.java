@@ -86,7 +86,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         {
             double lat= mCurrentLocation.getLatitude();
             double lng= mCurrentLocation.getLongitude();
-            searchForNearbyFavors(lat,lng,500);
+            searchForNearbyFavors(lat,lng,1000);
         }
         //register for location updates
         LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this);
