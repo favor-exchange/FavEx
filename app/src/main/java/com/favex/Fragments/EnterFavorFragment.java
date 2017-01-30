@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import android.widget.Toast;
 import com.favex.Activities.FavorFormActivity;
 import com.favex.Adapters.OrderRecyclerAdapter;
 import com.favex.POJOs.OrderItem;
-import com.favex.PriceRangeSeekBar;
+import com.favex.CustomViews.PriceRangeSeekBar;
 import com.favex.R;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;

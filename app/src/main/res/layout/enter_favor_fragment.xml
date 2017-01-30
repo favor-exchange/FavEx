@@ -92,7 +92,7 @@
         android:id="@+id/nextBtn"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
-    <com.favex.PriceRangeSeekBar
+    <com.favex.CustomViews.PriceRangeSeekBar
         android:id="@+id/priceRange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

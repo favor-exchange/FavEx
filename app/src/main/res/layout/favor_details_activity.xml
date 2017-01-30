@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.favex.CustomScrollView
+<com.favex.CustomViews.CustomScrollView
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -202,4 +202,4 @@
             android:src="@drawable/ic_reply_white_24dp"
             android:layout_margin="80dp"/>
     </android.support.design.widget.CoordinatorLayout>
-</com.favex.CustomScrollView>
+</com.favex.CustomViews.CustomScrollView>

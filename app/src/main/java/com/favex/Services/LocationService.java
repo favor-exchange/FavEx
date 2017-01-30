@@ -86,7 +86,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         {
             double lat= mCurrentLocation.getLatitude();
             double lng= mCurrentLocation.getLongitude();
-            searchForNearbyFavors(lat,lng,1000);
+            searchForNearbyFavors(lat,lng,10000);
         }
         //register for location updates
         LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this);
@@ -106,7 +106,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private void setLocationParameter() {
         mLocationRequest.setInterval(600000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(25);
+        mLocationRequest.setSmallestDisplacement(0);
         mLocationRequest.setFastestInterval(60000);
     }
 
@@ -115,7 +115,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.i("LOCATION SERVICE","LOCATION CHANGED!");
         double lat= location.getLatitude();
         double lng= location.getLongitude();
-        searchForNearbyFavors(lat,lng,500);
+        searchForNearbyFavors(lat,lng,10000);
     }
 
     @Override

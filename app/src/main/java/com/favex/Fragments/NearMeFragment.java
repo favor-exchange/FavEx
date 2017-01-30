@@ -79,7 +79,7 @@ public class NearMeFragment extends Fragment{
                         double userLng= mostLikelyLocation.getPlace().getLatLng().longitude;
                         likelyPlaces.release();
                         ApiClient.getNearbyFavors(String.valueOf(userLat),
-                                String.valueOf(userLng), "1000").enqueue(new Callback() {
+                                String.valueOf(userLng), "10000").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();

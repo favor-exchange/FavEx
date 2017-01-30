@@ -1,4 +1,4 @@
-package com.favex;
+package com.favex.CustomViews;
 
 import android.content.Context;
 import android.util.AttributeSet;
