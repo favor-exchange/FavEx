@@ -25,15 +25,11 @@ import java.util.ArrayList;
 
 import com.favex.Activities.FavorDetails;
 import com.favex.R;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
-
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 /**
