@@ -148,7 +148,12 @@ public class MessagesActivity extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mReceiver);
+        try {
+            unregisterReceiver(mReceiver);
+        }
+        catch (Exception e){
+            Log.e("Receiver Exception", "Exception.");
+        }
     }
 
     private class Receiver extends BroadcastReceiver {
