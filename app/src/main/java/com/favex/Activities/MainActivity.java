@@ -1,10 +1,12 @@
 package com.favex.Activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -17,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +34,15 @@ import com.favex.Services.ChatService;
 import com.favex.Services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
 
 import java.util.ArrayList;
@@ -41,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private SharedPreferences prefs;
     private GoogleApiClient mGoogleApiClient;
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
+    final private int REQUEST_CHECK_SETTINGS= 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
+                .addApi(LocationServices.API)
                 .enableAutoManage(this, this)
                 .build();
 
@@ -66,6 +80,38 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+        LocationRequest mLocationRequestHighAccuracy= new LocationRequest()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequestHighAccuracy);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates states= result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        try
+                        {
+                            status.startResolutionForResult(MainActivity.this,
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.e("Main Activity","SETTINGS UNAVAILABLE!");
+                        break;
+                }
+            }
+        });
 
         List<String> permissionsNeeded = new ArrayList<String>();
 
@@ -134,6 +180,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     @Override
+    protected void onActivityResult(int locationRequestCode, int resultCode, Intent data) {
+        final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (locationRequestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(this,"Locations needs to be activated for optimal functionality",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         switch (requestCode) {
@@ -155,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             default: Toast.makeText(this,"Permissions Callback Error",Toast.LENGTH_SHORT).show();
         }
+
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
         viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
