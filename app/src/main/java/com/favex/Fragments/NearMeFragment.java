@@ -79,7 +79,7 @@ public class NearMeFragment extends Fragment{
                         double userLng= mostLikelyLocation.getPlace().getLatLng().longitude;
                         likelyPlaces.release();
                         ApiClient.getNearbyFavors(String.valueOf(userLat),
-                                String.valueOf(userLng), "10000").enqueue(new Callback() {
+                                String.valueOf(userLng), "50000").enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
                                 e.printStackTrace();
@@ -119,7 +119,7 @@ public class NearMeFragment extends Fragment{
                     }
                     else
                     {
-                        Toast.makeText(getActivity(), "No nearby places found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "No nearby places found, check if your location is activated", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
