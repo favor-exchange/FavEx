@@ -20,7 +20,8 @@
         android:id="@+id/skip_login_tmp_button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="32dp"
+        android:visibility="invisible"/>
 
     <ImageView
         android:layout_width="wrap_content"
