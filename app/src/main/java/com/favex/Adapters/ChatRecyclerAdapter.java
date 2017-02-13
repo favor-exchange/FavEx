@@ -178,7 +178,9 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
         }
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
-            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            if(image != null) {
+                image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            }
             fos.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
